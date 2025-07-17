@@ -1,0 +1,134 @@
+/* --- login.css: Fully Fixed and Responsive Login Page Styles for CARBS --- */
+
+/* Ensure consistent spacing for all elements */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+:root {
+  --primary: #00509e;
+  --secondary: #1a2c4e;
+  --light-bg: #f4f6f9;
+  --font-stack: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-stack);
+  background-color: var(--light-bg);
+}
+
+.login-main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.login-container {
+  background-color: #fff;
+  padding: 40px 30px;
+  border-radius: 15px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+  width: 100%;
+  max-width: 420px;
+  text-align: center;
+}
+
+.login-welcome-title {
+  font-size: 2.2em;
+  font-weight: 700;
+  color: var(--primary);
+  margin: 0 0 6px;
+}
+
+.login-welcome-subtitle {
+  font-size: 1em;
+  color: #666;
+  margin-bottom: 25px;
+}
+
+.login-container h2 {
+  font-size: 1.6em;
+  font-weight: 600;
+  color: var(--secondary);
+  margin-bottom: 22px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-group {
+  text-align: left;
+}
+
+label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: var(--secondary);
+}
+
+input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1em;
+  background-color: #fff;
+}
+
+input:focus {
+  border-color: var(--primary);
+  outline: none;
+  box-shadow: 0 0 6px rgba(0, 80, 158, 0.2);
+}
+
+.btn {
+  background-color: var(--primary);
+  color: #fff;
+  padding: 14px 0;
+  font-size: 1.1em;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.btn:hover {
+  background-color: #003f7d;
+}
+
+.forgot-password,
+.signup-link {
+  margin-top: 10px;
+  font-size: 0.9em;
+  color: #555;
+}
+
+.forgot-password a,
+.signup-link a {
+  color: var(--primary);
+  text-decoration: none;
+}
+
+.forgot-password a:hover,
+.signup-link a:hover {
+  text-decoration: underline;
+}
+
+footer {
+  text-align: center;
+  padding: 15px;
+  font-size: 0.8em;
+  color: #aaa;
+  background-color: #fff;
+  border-top: 1px solid #e5e5e5;
+  margin-top: 30px;
+}
