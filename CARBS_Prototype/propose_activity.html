@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CARBS - Propose Activity</title>
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/footer.css">
+    <link rel="stylesheet" href="css/forms.css"> </head>
+<body>
+    <div id="header-placeholder"></div>
+    <main>
+        <section class="form-container">
+            <h2>Propose New Activity</h2>
+            <p class="form-description">Fill out the details below to propose a new activity for your club. Ensure all required fields are completed.</p>
+
+            <form id="activityProposalForm">
+                <div class="form-group">
+                    <label for="activityName">Activity Name:</label>
+                    <input type="text" id="activityName" name="activityName" placeholder="e.g., Annual Charity Run" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="clubName">Your Club Name:</label>
+                    <input type="text" id="clubName" name="clubName" placeholder="e.g., Photography Club" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="activityDescription">Activity Description:</label>
+                    <textarea id="activityDescription" name="activityDescription" rows="6" placeholder="Provide a detailed description of the activity, its purpose, and what it entails." required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="proposedDate">Proposed Date:</label>
+                    <input type="date" id="proposedDate" name="proposedDate" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="startTime">Start Time:</label>
+                    <input type="time" id="startTime" name="startTime" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="endTime">End Time:</label>
+                    <input type="time" id="endTime" name="endTime" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="expectedAttendees">Expected Number of Attendees:</label>
+                    <input type="number" id="expectedAttendees" name="expectedAttendees" min="1" placeholder="e.g., 50" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="resourcesNeeded">Resources Needed:</label>
+                    <textarea id="resourcesNeeded" name="resourcesNeeded" rows="4" placeholder="List any specific rooms, equipment, or facilities required for this activity (e.g., Auditorium A, Projector, Microphones)." required></textarea>
+                    <small>Note: Actual resource booking will be done in a separate step after proposal approval.</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="contactPerson">Contact Person Name:</label>
+                    <input type="text" id="contactPerson" name="contactPerson" placeholder="Full Name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="contactEmail">Contact Email:</label>
+                    <input type="email" id="contactEmail" name="contactEmail" placeholder="your.email@example.com" required>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn">Submit Proposal</button>
+                    <button type="reset" class="btn secondary-btn">Clear Form</button>
+                </div>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 CARBS. All rights reserved.</p>
+    </footer>
+
+    <script src="js/load_header.js"></script>
+    <script src="js/data.js"></script>
+    <script>
+        document.getElementById('activityProposalForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const form = event.target;
+            const newProposal = {
+                id: window.mockData.activityProposals.length + 1,
+                activityName: form.activityName.value,
+                clubName: form.clubName.value,
+                proposedDate: form.proposedDate.value,
+                startTime: form.startTime.value,
+                endTime: form.endTime.value,
+                description: form.activityDescription.value,
+                expectedAttendees: form.expectedAttendees.value,
+                resourcesNeeded: form.resourcesNeeded.value,
+                contactPerson: form.contactPerson.value,
+                contactEmail: form.contactEmail.value,
+                status: 'Pending Approval',
+                submissionDate: new Date().toISOString().split('T')[0]
+            };
+            window.mockData.activityProposals.push(newProposal);
+            alert('Activity proposal submitted for review!');
+            form.reset();
+        });
+    </script>
+</body>
+</html>

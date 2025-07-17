@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CARBS - Chat</title>
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/footer.css">
+    <link rel="stylesheet" href="css/chat.css"> </head>
+<body>
+    <div id="header-placeholder"></div>
+    <main>
+        <section class="chat-container">
+            <h2>Club Communication Chat</h2>
+            <p class="section-description">Connect with other club leaders and administrators.</p>
+
+            <div id="chatMessages" class="chat-messages">
+                <div class="no-messages">Start a conversation! No messages yet.</div>
+            </div>
+
+            <div class="chat-input-area">
+                <input type="text" id="chatInput" placeholder="Type your message here...">
+                <button class="btn" id="sendMessageBtn">Send</button>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 CARBS. All rights reserved.</p>
+    </footer>
+
+    <script src="js/load_header.js"></script>
+    <script src="js/data.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const chatMessagesDiv = document.getElementById('chatMessages');
+            const chatInput = document.getElementById('chatInput');
+            const sendMessageBtn = document.getElementById('sendMessageBtn');
+
+            // Mock chat data (can be moved to data.js if desired for central management)
+            // For now, keeping it here for simplicity of chat logic.
+            let mockChatHistory = [
+                { sender: 'Admin', message: 'Welcome to the CARBS chat! Feel free to ask questions or coordinate activities.', type: 'other', timestamp: '09:00 AM' },
+                { sender: 'Sports Club', message: 'Hey everyone, is anyone available to discuss field booking for next month?', type: 'other', timestamp: '09:15 AM' },
+                { sender: 'You (Debate Society)', message: 'Good morning! I have a question about the new projector in Room B. Is it available for use after 6 PM next Tuesday?', type: 'self', timestamp: '09:30 AM' }
+            ];
+
+            function displayMessages() {
+                chatMessagesDiv.innerHTML = ''; // Clear existing messages
+                if (mockChatHistory.length === 0) {
+                    chatMessagesDiv.innerHTML = '<div class="no-messages">Start a conversation! No messages yet.</div>';
+                    return;
+                }
+
+                mockChatHistory.forEach(msg => {
+                    const messageElement = document.createElement('div');
+                    messageElement.classList.add('chat-message', msg.type);
+
+                    const avatar = document.createElement('div');
+                    avatar.classList.add('chat-avatar');
+                    avatar.textContent = msg.sender.charAt(0); // First letter of sender
+
+                    const bubble = document.createElement('div');
+                    bubble.classList.add('message-bubble');
+                    bubble.innerHTML = `
+                        <strong>${msg.sender}</strong>
+                        ${msg.message}
+                        <span class="timestamp">${msg.timestamp}</span>
+                    `;
+
+                    if (msg.type === 'self') {
+                        messageElement.appendChild(bubble);
+                        messageElement.appendChild(avatar);
+                    } else {
+                        messageElement.appendChild(avatar);
+                        messageElement.appendChild(bubble);
+                    }
+                    chatMessagesDiv.appendChild(messageElement);
+                });
+                // Scroll to the bottom to show the latest message
+                chatMessagesDiv.scrollTop = chatMessagesDiv.scrollHeight;
+            }
+
+            function sendMessage() {
+                const messageText = chatInput.value.trim();
+                if (messageText) {
+                    const now = new Date();
+                    const hours = now.getHours();
+                    const minutes = now.getMinutes();
+                    const ampm = hours >= 12 ? 'PM' : 'AM';
+                    const formattedHours = hours % 12 || 12; // Convert to 12-hour format
+                    const timestamp = `${formattedHours}:${String(minutes).padStart(2, '0')} ${ampm}`;
+
+                    mockChatHistory.push({
+                        sender: 'You (Debate Society)', // Simulating current user
+                        message: messageText,
+                        type: 'self',
+                        timestamp: timestamp
+                    });
+                    chatInput.value = ''; // Clear input field
+                    displayMessages(); // Re-render messages
+                }
+            }
+
+            sendMessageBtn.addEventListener('click', sendMessage);
+            chatInput.addEventListener('keypress', function(event) {
+                if (event.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+
+            // Initial display of messages
+            displayMessages();
+        });
+    </script>
+</body>
+</html>
