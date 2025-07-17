@@ -12,11 +12,10 @@
 
   <main>
     <div class="dashboard-sections">
-      <!-- Section 1 -->
       <section class="dashboard-section">
         <h3>My Club's Requests Status</h3>
         <p class="detailed-list-heading">
-          View the status of all your club's activity proposals and resource bookings.
+          View the status of all your club's activity proposals.
         </p>
         <div class="dashboard-table-wrapper">
           <table class="dashboard-table">
@@ -29,12 +28,11 @@
             <tbody id="myClubRequestsTableBody"></tbody>
           </table>
           <p id="noClubRequestsMessage" class="no-data-message" style="display: none;">
-            You have not submitted any activity proposals or resource bookings yet.
+            You have not submitted any activity proposals yet.
           </p>
         </div>
       </section>
 
-      <!-- Section 2 -->
       <section class="dashboard-section">
         <h3>Resource Bookings Status</h3>
         <p class="detailed-list-heading">
@@ -76,35 +74,19 @@
       const myClubProposals = window.mockData.activityProposals.filter(
         proposal => proposal.clubName === userClub
       );
-      const myClubBookings = window.mockData.resourceBookings.filter(
-        booking => booking.bookedBy === userClub
-      );
 
-      if (myClubProposals.length > 0 || myClubBookings.length > 0) {
+      if (myClubProposals.length > 0) {
         myClubRequestsTableBody.innerHTML = '';
 
         myClubProposals.forEach(proposal => {
           const row = myClubRequestsTableBody.insertRow();
-          row.insertCell().textContent = `Activity: ${proposal.activityName}`;
+          row.insertCell().textContent = `${proposal.activityName}`;
           const statusCell = row.insertCell();
           const badge = document.createElement('span');
           badge.classList.add('status-badge');
           badge.textContent = proposal.status;
           if (proposal.status === 'Approved') badge.classList.add('status-approved');
           else if (proposal.status === 'Rejected') badge.classList.add('status-rejected');
-          else badge.classList.add('status-pending');
-          statusCell.appendChild(badge);
-        });
-
-        myClubBookings.forEach(booking => {
-          const row = myClubRequestsTableBody.insertRow();
-          row.insertCell().textContent = `Resource: ${booking.resourceName}`;
-          const statusCell = row.insertCell();
-          const badge = document.createElement('span');
-          badge.classList.add('status-badge');
-          badge.textContent = booking.status;
-          if (booking.status === 'Approved') badge.classList.add('status-approved');
-          else if (booking.status === 'Rejected') badge.classList.add('status-rejected');
           else badge.classList.add('status-pending');
           statusCell.appendChild(badge);
         });

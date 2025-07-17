@@ -1,0 +1,37 @@
+<header class="main-header admin-header">
+  <div class="header-content">
+    <h1>CARBS Dashboard</h1>
+    <p>Student Affairs Administrator Portal</p>
+  </div>
+
+  <nav class="main-nav">
+    <ul>
+      <li><a href="admin_dashboard.html">Dashboard</a></li>
+      <li><a href="admin_proposals.html">Proposals</a></li>
+      <li><a href="admin_resource_bookings.html">Resources Bookings</a></li>
+      <li><a href="admin_check_availability.html">Check Availability</a></li>
+      <li><a href="admin_reports.html">Reports</a></li>
+      <li><a href="admin_chat.html">Chat</a></li>
+    </ul>
+  </nav>
+
+  <div class="user-info">
+    <span>Logged in as: Student Affairs Administrator (Dummy)</span>
+    <button class="btn logout-btn" onclick="location.href='login.html'">Logout</button>
+  </div>
+</header>
+
+<script>
+  // Auto highlight current page tab
+  document.addEventListener("DOMContentLoaded", function () {
+    const currentPath = window.location.pathname.split("/").pop();
+    const navLinks = document.querySelectorAll(".main-nav a");
+
+    navLinks.forEach((link) => {
+      const href = link.getAttribute("href");
+      if (href === currentPath) {
+        link.classList.add("active");
+      }
+    });
+  });
+</script>

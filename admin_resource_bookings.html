@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CARBS - Manage Resource Bookings</title>
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/footer.css">
+    <style>
+        main {
+            padding: 40px 20px;
+            max-width: 1200px;
+            margin: auto;
+        }
+        .proposals-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .proposals-header h2 {
+            font-size: 2.5em;
+            color: #1a2c4e;
+            margin-bottom: 5px;
+        }
+        .proposals-table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #ffffff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            margin-bottom: 40px;
+        }
+        .proposals-table th, .proposals-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .proposals-table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: #555;
+        }
+        .status-pending {
+            color: #ff9800;
+            font-weight: bold;
+        }
+        .status-approved {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .status-rejected {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .action-btn {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+        }
+        .action-btn.approve {
+            background-color: #28a745;
+            color: white;
+        }
+        .action-btn.reject {
+            background-color: #dc3545;
+            color: white;
+        }
+        .action-btn.disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div id="header-placeholder"></div>
+    <main>
+        <div class="proposals-header">
+            <h2>Manage Resource Bookings</h2>
+            <p class="section-description">View, approve, or reject all resource bookings.</p>
+        </div>
+        <table class="proposals-table">
+            <thead>
+                <tr>
+                    <th>Resource Name</th>
+                    <th>Booked By</th>
+                    <th>Date</th>
+                    <th>Time Slot</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="bookingsTableBody">
+                </tbody>
+        </table>
+    </main>
+    <footer>
+        <p>&copy; 2025 CARBS. All rights reserved.</p>
+    </footer>
+    <script src="js/admin_load_header.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const allBookings = [
+                { resourceName: 'Auditorium A', bookedBy: 'IT Club', date: '2025-10-25', timeSlot: '10:00 - 12:00', status: 'Pending' },
+                { resourceName: 'Lecture Hall 3', bookedBy: 'Debate Society', date: '2025-11-05', timeSlot: '14:00 - 16:00', status: 'Pending' },
+                { resourceName: 'Main Field', bookedBy: 'Running Club', date: '2025-11-15', timeSlot: '08:00 - 10:00', status: 'Approved' },
+                { resourceName: 'Multimedia Lab 2', bookedBy: 'Film Society', date: '2025-10-28', timeSlot: '13:00 - 15:00', status: 'Rejected' },
+                { resourceName: 'Conference Room 1', bookedBy: 'Student Union', date: '2025-12-01', timeSlot: '09:00 - 11:00', status: 'Approved' }
+            ];
+            function populateBookingsTable(data) {
+                const tableBody = document.getElementById('bookingsTableBody');
+                tableBody.innerHTML = '';
+                data.forEach(booking => {
+                    const row = document.createElement('tr');
+                    const statusClass = `status-${booking.status.toLowerCase()}`;
+                    const actionButtons = booking.status === 'Pending' ?
+                        `<td>
+                            <button class="action-btn approve">Approve</button>
+                            <button class="action-btn reject">Reject</button>
+                        </td>` :
+                        `<td>
+                            <button class="action-btn disabled">Approved</button>
+                        </td>`;
+                    const bookingUrl = `admin_view_booking.html?` + new URLSearchParams({
+                        resourceName: booking.resourceName,
+                        bookedBy: booking.bookedBy,
+                        date: booking.date,
+                        timeSlot: booking.timeSlot,
+                        status: booking.status
+                    }).toString();
+                    row.innerHTML = `
+                        <td><a href="${bookingUrl}" style="text-decoration: underline; color: #007bff;">${booking.resourceName}</a></td>
+                        <td>${booking.bookedBy}</td>
+                        <td>${booking.date}</td>
+                        <td>${booking.timeSlot}</td>
+                        <td><span class="${statusClass}">${booking.status}</span></td>
+                        ${actionButtons}
+                    `;
+                    tableBody.appendChild(row);
+                });
+            }
+            populateBookingsTable(allBookings);
+        });
+    </script>
+</body>
+</html>

@@ -1,48 +1,201 @@
 <!DOCTYPE html>
+
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>CARBS - Login</title>
-  <link rel="stylesheet" href="css/global.css" />
-  <link rel="stylesheet" href="css/forms.css" />
-  <link rel="stylesheet" href="css/login.css" />
-</head>
-<body>
-  <main class="login-main">
-    <section class="login-container">
-      <h1 class="login-welcome-title">Welcome to CARBS</h1>
-      <p class="login-welcome-subtitle">Club Activity & Resource Booking System</p>
+  <head>
+    <meta charset="UTF-8" />
 
-      <h2>Login to Your Account</h2>
-      <form id="loginForm">
-        <div class="form-group">
-          <label for="username">Username or Email</label>
-          <input type="text" id="username" name="username" required />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>CARBS - Login</title>
+
+    <link rel="stylesheet" href="css/global.css" />
+
+    <link rel="stylesheet" href="css/footer.css" />
+
+    <style>
+      body {
+        background-color: #f4f7f9;
+
+        display: flex;
+
+        flex-direction: column;
+
+        min-height: 100vh;
+      }
+
+      main {
+        flex-grow: 1;
+
+        display: flex;
+
+        justify-content: center;
+
+        align-items: center;
+
+        padding: 20px;
+      }
+
+      .login-container {
+        background-color: #ffffff;
+
+        padding: 40px;
+
+        border-radius: 10px;
+
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+
+        width: 100%;
+
+        max-width: 400px;
+
+        text-align: center;
+      }
+
+      .login-container h2 {
+        color: #1a2c4e;
+
+        margin-bottom: 30px;
+
+        font-size: 2em;
+
+        font-weight: 700;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+
+        text-align: left;
+      }
+
+      .form-group label {
+        display: block;
+
+        margin-bottom: 8px;
+
+        color: #555;
+      }
+
+      .form-group input {
+        width: 100%;
+
+        padding: 12px;
+
+        border: 1px solid #ddd;
+
+        border-radius: 5px;
+
+        box-sizing: border-box;
+
+        font-size: 1em;
+      }
+
+      .btn {
+        width: 100%;
+
+        padding: 12px;
+
+        border-radius: 5px;
+
+        cursor: pointer;
+
+        background-color: #007bff;
+
+        color: white;
+
+        border: none;
+
+        font-size: 1.1em;
+
+        font-weight: 600;
+
+        transition: background-color 0.3s ease;
+      }
+
+      .btn:hover {
+        background-color: #0056b3;
+      }
+
+      .login-links {
+        margin-top: 20px;
+
+        font-size: 0.9em;
+      }
+
+      .login-links a {
+        color: #007bff;
+
+        text-decoration: none;
+
+        margin: 0 5px;
+      }
+
+      .login-links a:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+
+  <body>
+    <main>
+      <section class="login-container">
+        <h2>User Login</h2>
+
+        <form id="loginForm">
+          <div class="form-group">
+            <label for="username">Username:</label>
+
+            <input type="text" id="username" name="username" required />
+          </div>
+
+          <div class="form-group">
+            <label for="password">Password:</label>
+
+            <input type="password" id="password" name="password" required />
+          </div>
+
+          <button type="submit" class="btn">Login</button>
+        </form>
+
+        <div class="login-links">
+          <a href="#">Forgot Password?</a>
+
+          <p>Don't have an account? <a href="#">Sign Up</a></p>
         </div>
+      </section>
+    </main>
 
-        <div class="form-group">
-          <label for="password">Password</label>
-          <input type="password" id="password" name="password" required />
-        </div>
+    <footer>
+      <p>&copy; 2025 CARBS. All rights reserved.</p>
+    </footer>
 
-        <button type="submit" class="btn">Log In</button>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const loginForm = document.getElementById("loginForm");
 
-        <p class="forgot-password">
-          <a href="#">Forgot your password?</a>
-        </p>
-      </form>
+        const usernameInput = document.getElementById("username");
 
-      <p class="signup-link">
-        Don’t have an account? <a href="#">Sign up here</a>
-      </p>
-    </section>
-  </main>
+        loginForm.addEventListener("submit", function (event) {
+          event.preventDefault(); // Prevent the form from submitting normally
 
-  <footer>
-    <p>&copy; 2025 CARBS. Developed by APU Group 4.</p>
-  </footer>
+          const username = usernameInput.value.trim();
 
-  <script src="main.js"></script>
-</body>
+          // Check the username for the specified roles
+
+          if (username === "a") {
+            // Club Leader login, redirect to dashboard.html
+
+            window.location.href = "main.html";
+          } else if (username === "b") {
+            // Student Affairs Administrator login, redirect to admin_dashboard.html
+
+            window.location.href = "admin_dashboard.html";
+          } else {
+            // Invalid credentials
+
+            alert("Invalid username or password.");
+          }
+        });
+      });
+    </script>
+  </body>
 </html>

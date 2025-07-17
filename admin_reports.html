@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CARBS - Admin Reports</title>
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/footer.css">
+    <style>
+        /* This style block overrides the header.css for this page only */
+        .main-nav a.active {
+            background-color: #007bff !important;
+            color: #ffffff !important;
+        }
+        main {
+            padding: 40px 20px;
+            max-width: 1200px;
+            margin: auto;
+        }
+        .reports-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .reports-header h2 {
+            font-size: 2.5em;
+            color: #1a2c4e;
+            margin-bottom: 5px;
+        }
+        .report-controls {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .report-controls label {
+            font-size: 1.1em;
+            color: #333;
+            margin-right: 10px;
+        }
+        .report-controls select {
+            padding: 10px 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1em;
+            min-width: 200px;
+        }
+        .report-display {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            min-height: 400px;
+            overflow-x: auto; /* For responsive tables */
+        }
+        .report-display h3 {
+            color: #1a2c4e;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 10px;
+        }
+        .report-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .report-table th, .report-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .report-table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: #555;
+        }
+        .report-table tbody tr:hover {
+            background-color: #f5f5f5;
+        }
+        .no-data-message {
+            text-align: center;
+            color: #777;
+            padding: 50px;
+        }
+    </style>
+</head>
+<body>
+    <div id="header-placeholder"></div>
+    <main>
+        <div class="reports-header">
+            <h2>Administrator Reports</h2>
+            <p class="section-description">Generate and view various reports on club activities and resource utilization.</p>
+        </div>
+
+        <div class="report-controls">
+            <label for="reportType">Select Report:</label>
+            <select id="reportType">
+                <option value="resourceUtilization">Resource Utilization Report</option>
+                <option value="popularActivities">Popular Activity Trends</option>
+                <option value="clubActivitySummary">Club Activity Summary</option>
+            </select>
+        </div>
+
+        <section class="report-display" id="reportDisplayArea">
+            <!-- Report content will be dynamically loaded here -->
+            <p class="no-data-message">Select a report type to view data.</p>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 CARBS. All rights reserved.</p>
+    </footer>
+
+    <script src="js/admin_load_header.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const reportTypeSelect = document.getElementById('reportType');
+            const reportDisplayArea = document.getElementById('reportDisplayArea');
+
+            // Mock Data for Reports
+            const mockReportsData = {
+                resourceUtilization: [
+                    { name: 'Auditorium A', totalBookings: 35, totalHoursUsed: 140, availabilityPercentage: '65%' },
+                    { name: 'Lecture Hall 1', totalBookings: 50, totalHoursUsed: 200, availabilityPercentage: '50%' },
+                    { name: 'Main Field', totalBookings: 20, totalHoursUsed: 80, availabilityPercentage: '80%' },
+                    { name: 'Projector (Portable)', totalBookings: 60, totalHoursUsed: 180, availabilityPercentage: '70%' },
+                    { name: 'Conference Room 1', totalBookings: 28, totalHoursUsed: 112, availabilityPercentage: '72%' }
+                ],
+                popularActivities: [
+                    { name: 'Annual Charity Run', proposals: 5, approvals: 4 },
+                    { name: 'Debate Tournament', proposals: 7, approvals: 6 },
+                    { name: 'Semester Gala Dinner', proposals: 3, approvals: 3 },
+                    { name: 'Photography Exhibition', proposals: 4, approvals: 2 },
+                    { name: 'E-Sports Tournament', proposals: 6, approvals: 5 }
+                ],
+                clubActivitySummary: [
+                    { club: 'Running Club', proposalsSubmitted: 12, resourcesBooked: 8, statusApproved: 10, statusPending: 2, statusRejected: 0 },
+                    { club: 'Debate Society', proposalsSubmitted: 15, resourcesBooked: 10, statusApproved: 12, statusPending: 3, statusRejected: 0 },
+                    { club: 'Student Union', proposalsSubmitted: 20, resourcesBooked: 15, statusApproved: 18, statusPending: 1, statusRejected: 1 },
+                    { club: 'Film Society', proposalsSubmitted: 8, resourcesBooked: 7, statusApproved: 6, statusPending: 1, statusRejected: 1 },
+                    { club: 'Chess Club', proposalsSubmitted: 7, resourcesBooked: 5, statusApproved: 7, statusPending: 0, statusRejected: 0 }
+                ]
+            };
+
+            function renderReport(reportType) {
+                reportDisplayArea.innerHTML = ''; // Clear previous content
+                let htmlContent = '';
+
+                switch (reportType) {
+                    case 'resourceUtilization':
+                        htmlContent = `
+                            <h3>Resource Utilization Report</h3>
+                            <table class="report-table">
+                                <thead>
+                                    <tr>
+                                        <th>Resource Name</th>
+                                        <th>Total Bookings</th>
+                                        <th>Total Hours Used</th>
+                                        <th>Availability Percentage</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                        `;
+                        mockReportsData.resourceUtilization.forEach(item => {
+                            htmlContent += `
+                                <tr>
+                                    <td>${item.name}</td>
+                                    <td>${item.totalBookings}</td>
+                                    <td>${item.totalHoursUsed}</td>
+                                    <td>${item.availabilityPercentage}</td>
+                                </tr>
+                            `;
+                        });
+                        htmlContent += `
+                                </tbody>
+                            </table>
+                        `;
+                        break;
+                    case 'popularActivities':
+                        htmlContent = `
+                            <h3>Popular Activity Trends</h3>
+                            <table class="report-table">
+                                <thead>
+                                    <tr>
+                                        <th>Activity Name</th>
+                                        <th>Proposals Submitted</th>
+                                        <th>Proposals Approved</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                        `;
+                        mockReportsData.popularActivities.forEach(item => {
+                            htmlContent += `
+                                <tr>
+                                    <td>${item.name}</td>
+                                    <td>${item.proposals}</td>
+                                    <td>${item.approvals}</td>
+                                </tr>
+                            `;
+                        });
+                        htmlContent += `
+                                </tbody>
+                            </table>
+                        `;
+                        break;
+                    case 'clubActivitySummary':
+                        htmlContent = `
+                            <h3>Club Activity Summary</h3>
+                            <table class="report-table">
+                                <thead>
+                                    <tr>
+                                        <th>Club Name</th>
+                                        <th>Proposals Submitted</th>
+                                        <th>Resources Booked</th>
+                                        <th>Approved</th>
+                                        <th>Pending</th>
+                                        <th>Rejected</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                        `;
+                        mockReportsData.clubActivitySummary.forEach(item => {
+                            htmlContent += `
+                                <tr>
+                                    <td>${item.club}</td>
+                                    <td>${item.proposalsSubmitted}</td>
+                                    <td>${item.resourcesBooked}</td>
+                                    <td>${item.statusApproved}</td>
+                                    <td>${item.statusPending}</td>
+                                    <td>${item.statusRejected}</td>
+                                </tr>
+                            `;
+                        });
+                        htmlContent += `
+                                </tbody>
+                            </table>
+                        `;
+                        break;
+                    default:
+                        htmlContent = '<p class="no-data-message">Select a report type to view data.</p>';
+                        break;
+                }
+                reportDisplayArea.innerHTML = htmlContent;
+            }
+
+            // Event listener for dropdown change
+            reportTypeSelect.addEventListener('change', (event) => {
+                renderReport(event.target.value);
+            });
+
+            // Initial render of the default report
+            renderReport(reportTypeSelect.value);
+        });
+    </script>
+</body>
+</html>

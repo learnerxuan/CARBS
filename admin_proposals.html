@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CARBS - Manage Proposals</title>
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/footer.css">
+    <style>
+        main {
+            padding: 40px 20px;
+            max-width: 1200px;
+            margin: auto;
+        }
+        .proposals-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .proposals-header h2 {
+            font-size: 2.5em;
+            color: #1a2c4e;
+            margin-bottom: 5px;
+        }
+        .proposals-table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #ffffff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            margin-bottom: 40px;
+        }
+        .proposals-table th, .proposals-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .proposals-table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: #555;
+        }
+        .status-pending {
+            color: #ff9800;
+            font-weight: bold;
+        }
+        .status-approved {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .status-rejected {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .action-btn {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+        }
+        .action-btn.approve {
+            background-color: #28a745;
+            color: white;
+        }
+        .action-btn.reject {
+            background-color: #dc3545;
+            color: white;
+        }
+        .action-btn.disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div id="header-placeholder"></div>
+    <main>
+        <div class="proposals-header">
+            <h2>Manage Activity Proposals</h2>
+            <p class="section-description">View, approve, or reject all club activity proposals.</p>
+        </div>
+
+        <table class="proposals-table">
+            <thead>
+                <tr>
+                    <th>Activity Name</th>
+                    <th>Club</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="proposalsTableBody">
+                </tbody>
+        </table>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 CARBS. All rights reserved.</p>
+    </footer>
+
+    <script src="js/admin_load_header.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const allProposals = [
+                { name: 'Annual Charity Run', club: 'Running Club', date: '2025-11-15', status: 'Pending', description: 'A charity run to raise funds for local charities.', attendees: 100, resources: 'Main Field', contactPerson: 'John Doe', contactEmail: 'john.doe@example.com' },
+                { name: 'Debate Tournament', club: 'Debate Society', date: '2025-10-22', status: 'Pending', description: 'An inter-club debate competition.', attendees: 50, resources: 'Auditorium B', contactPerson: 'Jane Smith', contactEmail: 'jane.smith@example.com' },
+                { name: 'Semester Gala Dinner', club: 'Student Union', date: '2025-12-01', status: 'Approved', description: 'End of semester celebration.', attendees: 250, resources: 'Grand Ballroom', contactPerson: 'Sam Wilson', contactEmail: 'sam.wilson@example.com' },
+                { name: 'Chess Club Championship', club: 'Chess Club', date: '2025-10-30', status: 'Approved', description: 'Annual chess competition.', attendees: 30, resources: 'Lecture Hall 1', contactPerson: 'Alice Brown', contactEmail: 'alice.brown@example.com' },
+                { name: 'Photography Exhibition', club: 'Photography Club', date: '2025-11-20', status: 'Rejected', description: 'Showcasing student photography.', attendees: 75, resources: 'Art Gallery', contactPerson: 'Bob White', contactEmail: 'bob.white@example.com' }
+            ];
+            function populateProposalsTable(data) {
+                const tableBody = document.getElementById('proposalsTableBody');
+                tableBody.innerHTML = '';
+                data.forEach(proposal => {
+                    const row = document.createElement('tr');
+                    const statusClass = `status-${proposal.status.toLowerCase()}`;
+                    const actionButtons = proposal.status === 'Pending' ?
+                        `<td>
+                            <button class="action-btn approve">Approve</button>
+                            <button class="action-btn reject">Reject</button>
+                        </td>` :
+                        `<td>
+                            <button class="action-btn disabled">Approved</button>
+                        </td>`;
+                    const proposalUrl = `admin_view_proposal.html?` + new URLSearchParams({
+                        name: proposal.name,
+                        club: proposal.club,
+                        date: proposal.date,
+                        status: proposal.status,
+                        description: proposal.description,
+                        attendees: proposal.attendees,
+                        resources: proposal.resources,
+                        contactPerson: proposal.contactPerson,
+                        contactEmail: proposal.contactEmail
+                    }).toString();
+                    row.innerHTML = `
+                        <td><a href="${proposalUrl}" style="text-decoration: underline; color: #007bff;">${proposal.name}</a></td>
+                        <td>${proposal.club}</td>
+                        <td>${proposal.date}</td>
+                        <td><span class="${statusClass}">${proposal.status}</span></td>
+                        ${actionButtons}
+                    `;
+                    tableBody.appendChild(row);
+                });
+            }
+            populateProposalsTable(allProposals);
+        });
+    </script>
+
+</body>
+</html>
