@@ -58,6 +58,14 @@
                     <label for="clubBooking">Your Club Name:</label>
                     <input type="text" id="clubBooking" name="clubBooking" placeholder="e.g., Chess Club" required>
                 </div>
+                
+                <div class="form-group">
+                    <label for="priority">Request Priority:</label>
+                    <select id="priority" name="priority" required>
+                        <option value="low">Low</option>
+                        <option value="high">High</option>
+                    </select>
+                </div>
 
                 <div class="form-actions">
                     <button type="submit" class="btn">Submit Booking Request</button>
@@ -130,6 +138,7 @@
                     endTime: document.getElementById('bookingEndTime').value,
                     purpose: document.getElementById('purpose').value,
                     bookedBy: document.getElementById('clubBooking').value,
+                    priority: document.getElementById('priority').value, // NEW: Include priority
                     status: 'Pending' // Default status
                 };
 
