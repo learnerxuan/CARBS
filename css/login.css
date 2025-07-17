@@ -34,7 +34,7 @@ body {
   border-radius: 15px;
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
   width: 100%;
-  max-width: 420px;
+  max-width: 620px; /* ← increased from 420px */
   text-align: center;
 }
 

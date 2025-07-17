@@ -1,117 +1,441 @@
 <!DOCTYPE html>
+
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <title>CARBS - Chat</title>
-    <link rel="stylesheet" href="css/global.css">
-    <link rel="stylesheet" href="css/footer.css">
-    <link rel="stylesheet" href="css/chat.css"> </head>
-<body>
+
+    <link rel="stylesheet" href="css/global.css" />
+
+    <link rel="stylesheet" href="css/footer.css" />
+
+    <link rel="stylesheet" href="css/chat.css" />
+
+    <style>
+      /* This CSS is identical to the one you provided, I am including it here for completeness. */
+
+      .chat-container {
+        background-color: #ffffff;
+
+        padding: 35px 45px;
+
+        border-radius: 10px;
+
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+
+        width: 100%;
+
+        max-width: 800px;
+
+        margin: 25px auto;
+
+        text-align: center;
+
+        display: flex;
+
+        flex-direction: column;
+
+        min-height: 500px;
+      }
+
+      .chat-container h2 {
+        color: #1a2c4e;
+
+        margin-bottom: 15px;
+
+        font-size: 2.2em;
+
+        font-weight: 700;
+
+        border-bottom: 2px solid #e0e0e0;
+
+        padding-bottom: 10px;
+      }
+
+      .chat-messages {
+        flex-grow: 1;
+
+        border: 1px solid #e0e0e0;
+
+        border-radius: 8px;
+
+        padding: 15px;
+
+        margin-bottom: 20px;
+
+        overflow-y: auto;
+
+        background-color: #fcfdff;
+
+        display: flex;
+
+        flex-direction: column;
+      }
+
+      .chat-message {
+        margin-bottom: 15px;
+
+        display: flex;
+
+        align-items: flex-start;
+      }
+
+      .chat-message.self {
+        justify-content: flex-end;
+      }
+
+      .chat-message.other {
+        justify-content: flex-start;
+      }
+
+      .chat-avatar {
+        width: 40px;
+
+        height: 40px;
+
+        border-radius: 50%;
+
+        background-color: #007bff;
+
+        color: white;
+
+        display: flex;
+
+        justify-content: center;
+
+        align-items: center;
+
+        font-weight: bold;
+
+        font-size: 0.9em;
+
+        flex-shrink: 0;
+
+        margin-right: 10px;
+      }
+
+      .chat-message.self .chat-avatar {
+        margin-right: 0;
+
+        margin-left: 10px;
+
+        background-color: #28a745;
+      }
+
+      .message-bubble {
+        background-color: #e0e0e0;
+
+        padding: 12px 18px;
+
+        border-radius: 20px;
+
+        max-width: 70%;
+
+        word-wrap: break-word;
+
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      }
+
+      .chat-message.self .message-bubble {
+        background-color: #dcf8c6;
+
+        color: #333;
+      }
+
+      .chat-message.other .message-bubble {
+        background-color: #f0f0f0;
+
+        color: #333;
+      }
+
+      .message-bubble strong {
+        display: block;
+
+        font-size: 0.8em;
+
+        color: #555;
+
+        margin-bottom: 5px;
+      }
+
+      .message-bubble .timestamp {
+        display: block;
+
+        font-size: 0.7em;
+
+        color: #888;
+
+        text-align: right;
+
+        margin-top: 5px;
+      }
+
+      .chat-input-area {
+        display: flex;
+
+        gap: 10px;
+
+        width: 100%;
+      }
+
+      .chat-input-area input[type="text"] {
+        flex-grow: 1;
+
+        padding: 12px 15px;
+
+        border: 1px solid #ccc;
+
+        border-radius: 25px;
+
+        font-size: 1em;
+
+        outline: none;
+
+        transition: border-color 0.3s ease;
+      }
+
+      .chat-input-area input[type="text"]:focus {
+        border-color: #007bff;
+      }
+
+      .chat-input-area .btn {
+        padding: 12px 25px;
+
+        border-radius: 25px;
+
+        cursor: pointer;
+
+        background-color: #007bff;
+
+        color: white;
+
+        border: none;
+
+        font-size: 1em;
+
+        font-weight: 600;
+
+        transition: background-color 0.3s ease;
+      }
+
+      .chat-input-area .btn:hover {
+        background-color: #0056b3;
+      }
+
+      .no-messages {
+        color: #777;
+
+        font-style: italic;
+
+        text-align: center;
+
+        padding: 20px;
+
+        flex-grow: 1;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+      }
+
+      @media (max-width: 768px) {
+        .chat-container {
+          padding: 20px;
+
+          max-width: 95%;
+        }
+
+        .chat-messages {
+          padding: 10px;
+        }
+
+        .message-bubble {
+          max-width: 85%;
+
+          padding: 10px 15px;
+        }
+
+        .chat-input-area {
+          flex-direction: column;
+        }
+
+        .chat-input-area input[type="text"],
+        .chat-input-area .btn {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
     <div id="header-placeholder"></div>
+
     <main>
-        <section class="chat-container">
-            <h2>Club Communication Chat</h2>
-            <p class="section-description">Connect with other club leaders and administrators.</p>
+      <section class="chat-container">
+        <h2>Club Communication Chat</h2>
 
-            <div id="chatMessages" class="chat-messages">
-                <div class="no-messages">Start a conversation! No messages yet.</div>
-            </div>
+        <p class="section-description">
+          A direct communication channel with the Student Affairs Administrator.
+        </p>
 
-            <div class="chat-input-area">
-                <input type="text" id="chatInput" placeholder="Type your message here...">
-                <button class="btn" id="sendMessageBtn">Send</button>
-            </div>
-        </section>
+        <div id="chatMessages" class="chat-messages">
+          <div class="no-messages">Start a conversation! No messages yet.</div>
+        </div>
+
+        <div class="chat-input-area">
+          <input
+            type="text"
+            id="chatInput"
+            placeholder="Type your message here..."
+          />
+
+          <button class="btn" id="sendMessageBtn">Send</button>
+        </div>
+      </section>
     </main>
 
     <footer>
-        <p>&copy; 2025 CARBS. All rights reserved.</p>
+      <p>&copy; 2025 CARBS. All rights reserved.</p>
     </footer>
 
     <script src="js/load_header.js"></script>
+
     <script src="js/data.js"></script>
+
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const chatMessagesDiv = document.getElementById('chatMessages');
-            const chatInput = document.getElementById('chatInput');
-            const sendMessageBtn = document.getElementById('sendMessageBtn');
+      document.addEventListener("DOMContentLoaded", function () {
+        const chatMessagesDiv = document.getElementById("chatMessages");
 
-            // Mock chat data (can be moved to data.js if desired for central management)
-            // For now, keeping it here for simplicity of chat logic.
-            let mockChatHistory = [
-                { sender: 'Admin', message: 'Welcome to the CARBS chat! Feel free to ask questions or coordinate activities.', type: 'other', timestamp: '09:00 AM' },
-                { sender: 'Sports Club', message: 'Hey everyone, is anyone available to discuss field booking for next month?', type: 'other', timestamp: '09:15 AM' },
-                { sender: 'You (Debate Society)', message: 'Good morning! I have a question about the new projector in Room B. Is it available for use after 6 PM next Tuesday?', type: 'self', timestamp: '09:30 AM' }
-            ];
+        const chatInput = document.getElementById("chatInput");
 
-            function displayMessages() {
-                chatMessagesDiv.innerHTML = ''; // Clear existing messages
-                if (mockChatHistory.length === 0) {
-                    chatMessagesDiv.innerHTML = '<div class="no-messages">Start a conversation! No messages yet.</div>';
-                    return;
-                }
+        const sendMessageBtn = document.getElementById("sendMessageBtn");
 
-                mockChatHistory.forEach(msg => {
-                    const messageElement = document.createElement('div');
-                    messageElement.classList.add('chat-message', msg.type);
+        // Mock chat data for a conversation between a Club Leader and an Administrator
 
-                    const avatar = document.createElement('div');
-                    avatar.classList.add('chat-avatar');
-                    avatar.textContent = msg.sender.charAt(0); // First letter of sender
+        let mockChatHistory = [
 
-                    const bubble = document.createElement('div');
-                    bubble.classList.add('message-bubble');
-                    bubble.innerHTML = `
+          {
+            sender: "You (Photography Club)",
+            message:
+              'Hello. I need to cancel our proposed activity, "Debate Tournament 2025", which is currently pending approval.',
+            type: "self",
+            timestamp: "10:05 AM",
+          },
+
+          {
+            sender: "Student Affairs Administrator",
+            message:
+              "Understood, Noted.",
+            type: "other",
+            timestamp: "10:06 AM",
+          },
+        ];
+
+        function displayMessages() {
+          chatMessagesDiv.innerHTML = ""; // Clear existing messages
+
+          if (mockChatHistory.length === 0) {
+            chatMessagesDiv.innerHTML =
+              '<div class="no-messages">Start a conversation! No messages yet.</div>';
+
+            return;
+          }
+
+          mockChatHistory.forEach((msg) => {
+            const messageElement = document.createElement("div");
+
+            messageElement.classList.add("chat-message", msg.type);
+
+            const avatar = document.createElement("div");
+
+            avatar.classList.add("chat-avatar");
+
+            avatar.textContent = msg.sender.charAt(0); // First letter of sender
+
+            const bubble = document.createElement("div");
+
+            bubble.classList.add("message-bubble");
+
+            bubble.innerHTML = `
+
                         <strong>${msg.sender}</strong>
+
                         ${msg.message}
+
                         <span class="timestamp">${msg.timestamp}</span>
+
                     `;
 
-                    if (msg.type === 'self') {
-                        messageElement.appendChild(bubble);
-                        messageElement.appendChild(avatar);
-                    } else {
-                        messageElement.appendChild(avatar);
-                        messageElement.appendChild(bubble);
-                    }
-                    chatMessagesDiv.appendChild(messageElement);
-                });
-                // Scroll to the bottom to show the latest message
-                chatMessagesDiv.scrollTop = chatMessagesDiv.scrollHeight;
+            if (msg.type === "self") {
+              messageElement.appendChild(bubble);
+
+              messageElement.appendChild(avatar);
+            } else {
+              messageElement.appendChild(avatar);
+
+              messageElement.appendChild(bubble);
             }
 
-            function sendMessage() {
-                const messageText = chatInput.value.trim();
-                if (messageText) {
-                    const now = new Date();
-                    const hours = now.getHours();
-                    const minutes = now.getMinutes();
-                    const ampm = hours >= 12 ? 'PM' : 'AM';
-                    const formattedHours = hours % 12 || 12; // Convert to 12-hour format
-                    const timestamp = `${formattedHours}:${String(minutes).padStart(2, '0')} ${ampm}`;
+            chatMessagesDiv.appendChild(messageElement);
+          });
 
-                    mockChatHistory.push({
-                        sender: 'You (Debate Society)', // Simulating current user
-                        message: messageText,
-                        type: 'self',
-                        timestamp: timestamp
-                    });
-                    chatInput.value = ''; // Clear input field
-                    displayMessages(); // Re-render messages
-                }
-            }
+          // Scroll to the bottom to show the latest message
 
-            sendMessageBtn.addEventListener('click', sendMessage);
-            chatInput.addEventListener('keypress', function(event) {
-                if (event.key === 'Enter') {
-                    sendMessage();
-                }
+          chatMessagesDiv.scrollTop = chatMessagesDiv.scrollHeight;
+        }
+
+        function sendMessage() {
+          const messageText = chatInput.value.trim();
+
+          if (messageText) {
+            const now = new Date();
+
+            const hours = now.getHours();
+
+            const minutes = now.getMinutes();
+
+            const ampm = hours >= 12 ? "PM" : "AM";
+
+            const formattedHours = hours % 12 || 12; // Convert to 12-hour format
+
+            const timestamp = `${formattedHours}:${String(minutes).padStart(
+              2,
+              "0"
+            )} ${ampm}`;
+
+            mockChatHistory.push({
+              sender: "You (Debate Society)", // Simulating current user
+
+              message: messageText,
+
+              type: "self",
+
+              timestamp: timestamp,
             });
 
-            // Initial display of messages
-            displayMessages();
+            chatInput.value = ""; // Clear input field
+
+            displayMessages(); // Re-render messages
+          }
+        }
+
+        sendMessageBtn.addEventListener("click", sendMessage);
+
+        chatInput.addEventListener("keypress", function (event) {
+          if (event.key === "Enter") {
+            sendMessage();
+          }
         });
+
+        // Initial display of messages
+
+        displayMessages();
+      });
     </script>
-</body>
+  </body>
 </html>
