@@ -8,33 +8,32 @@ const users = [
     { id: 'user002', username: 'admin', password: 'adminpassword', role: 'Admin', club: null },
     { id: 'user003', username: 'sportsclub', password: 'password', role: 'Club Leader', club: 'Sports Club' },
     { id: 'user004', username: 'musicdept', password: 'musicpass', role: 'Staff', club: null },
-    // Added a user for Photography Club to match dashboard
-    { id: 'user005', username: 'photoclub', password: 'password', role: 'Club Leader', club: 'Photography Club' }
+    { id: 'user005', username: 'photoclub', password: 'password', role: 'Club Leader', club: 'Photography Club' },
+    // New User Role
+    { id: 'user006', username: 'resourcemgr', password: 'resourcemgrpass', role: 'ResourceManager', club: null },
+    { id: 'user007', username: 'student', password: 'studentpass', role: 'Student', club: null }
 ];
 
 // --- Mock Resource Data ---
 const resources = [
-    // Original resources from your previous data
-    { id: 'res001', name: 'Auditorium A', type: 'room', capacity: 200, features: ['projector', 'sound system'] },
-    { id: 'res002', name: 'Meeting Room 1', type: 'room', capacity: 20, features: ['whiteboard', 'TV screen'] },
-    { id: 'res003', name: 'Lecture Hall B', type: 'room', capacity: 150, features: ['projector', 'microphone'] },
-    { id: 'res004', name: 'Conference Room 2', type: 'room', capacity: 10, features: ['video conferencing'] },
-    { id: 'res005', name: 'Projector Unit 1', type: 'equipment', quantity: 3, description: 'High-Lumen Projector' },
-    { id: 'res006', name: 'Sound System 2', type: 'equipment', quantity: 1, description: 'Portable PA System' },
-    { id: 'res007', name: 'Microphone Set 3', type: 'equipment', quantity: 5, description: 'Wireless Microphones' },
-    { id: 'res008', name: 'Van A', type: 'vehicle', capacity: 12, licenseRequired: 'Class D' },
-    { id: 'res009', name: 'Bus B', type: 'vehicle', capacity: 40, licenseRequired: 'Class E' },
-    // Resources from my added sample data (re-IDed to avoid clashes)
-    { id: 'res010', name: 'Main Auditorium', type: 'room', capacity: 500, features: ['stage', 'lighting', 'sound system'] },
-    { id: 'res011', name: 'Exhibition Hall A', type: 'room', capacity: 300, features: ['display panels', 'spotlights'] },
-    { id: 'res012', name: 'Video Projector (High-Res)', type: 'equipment', quantity: 1, description: '4K Projector' },
-    { id: 'res013', name: 'Canon DSLR Camera (Advanced)', type: 'equipment', quantity: 2, description: 'Professional DSLR with various lenses' },
-    { id: 'res014', name: 'University Mini-bus (Large)', type: 'vehicle', capacity: 20, licenseRequired: 'Class D' }
+    { id: 'res001', resourceName: 'Auditorium A', type: 'room', location: 'Block B', quantity: 1, available: 1 },
+    { id: 'res002', resourceName: 'Meeting Room 1', type: 'room', location: 'Block C', quantity: 1, available: 1 },
+    { id: 'res003', resourceName: 'Lecture Hall B', type: 'room', location: 'Block B', quantity: 1, available: 1 },
+    { id: 'res004', resourceName: 'Conference Room 2', type: 'room', location: 'Block A', quantity: 1, available: 1 },
+    { id: 'res005', resourceName: 'Projector Unit 1', type: 'equipment', location: 'IT Dept.', quantity: 3, available: 2 },
+    { id: 'res006', resourceName: 'Sound System 2', type: 'equipment', location: 'Music Dept.', quantity: 1, available: 0 },
+    { id: 'res007', resourceName: 'Microphone Set 3', type: 'equipment', location: 'Music Dept.', quantity: 5, available: 5 },
+    { id: 'res008', resourceName: 'Van A', type: 'vehicle', location: 'Transport Yard', quantity: 1, available: 1 },
+    { id: 'res009', resourceName: 'Bus B', type: 'vehicle', location: 'Transport Yard', quantity: 1, available: 1 },
+    { id: 'res010', resourceName: 'Main Auditorium', type: 'room', location: 'Main Building', quantity: 1, available: 1 },
+    { id: 'res011', resourceName: 'Exhibition Hall A', type: 'room', location: 'Fine Arts Building', quantity: 1, available: 1 },
+    { id: 'res012', resourceName: 'Video Projector (High-Res)', type: 'equipment', location: 'IT Dept.', quantity: 1, available: 1 },
+    { id: 'res013', resourceName: 'Canon DSLR Camera (Advanced)', type: 'equipment', location: 'Photography Studio', quantity: 2, available: 2 },
+    { id: 'res014', resourceName: 'University Mini-bus (Large)', type: 'vehicle', location: 'Transport Yard', quantity: 1, available: 1 }
 ];
 
 // --- Mock Activity Proposals Data ---
 const activityProposals = [
-    // Original proposals from your previous data
     {
         id: 'prop001',
         activityName: 'Annual Charity Run',
@@ -47,7 +46,7 @@ const activityProposals = [
         resourcesNeeded: 'Auditorium A (for registration), Sound System 2',
         contactPerson: 'Alice Wonderland',
         contactEmail: 'alice@example.com',
-        priority: 'high', // Added priority from previous update
+        priority: 'high',
         status: 'Pending Approval',
         submissionDate: '2025-07-10'
     },
@@ -63,13 +62,12 @@ const activityProposals = [
         resourcesNeeded: 'Meeting Room 1, Projector Unit 1',
         contactPerson: 'Bob Builder',
         contactEmail: 'bob@example.com',
-        priority: 'low', // Added priority from previous update
+        priority: 'low',
         status: 'Approved',
         submissionDate: '2025-07-08'
     },
-    // Proposals from my added sample data (re-IDed to avoid clashes)
     {
-        id: 'prop003', // Was id: 1
+        id: 'prop003',
         activityName: "Photography Club - Annual Exhibition",
         clubName: "Photography Club",
         proposedDate: "2025-08-15",
@@ -85,7 +83,7 @@ const activityProposals = [
         submissionDate: "2025-07-10"
     },
     {
-        id: 'prop004', // Was id: 2
+        id: 'prop004',
         activityName: "IT Club - Hackathon 2025",
         clubName: "IT Club",
         proposedDate: "2025-09-20",
@@ -101,7 +99,7 @@ const activityProposals = [
         submissionDate: "2025-07-15"
     },
     {
-        id: 'prop005', // Was id: 3
+        id: 'prop005',
         activityName: "Photography Club - Basic Photo Editing Workshop",
         clubName: "Photography Club",
         proposedDate: "2025-09-05",
@@ -117,7 +115,7 @@ const activityProposals = [
         submissionDate: "2025-07-16"
     },
     {
-        id: 'prop006', // Was id: 4
+        id: 'prop006',
         activityName: "Chess Club - Weekly Meetup",
         clubName: "Chess Club",
         proposedDate: "2025-08-01",
@@ -133,7 +131,7 @@ const activityProposals = [
         submissionDate: "2025-07-05"
     },
     {
-        id: 'prop007', // Was id: 5
+        id: 'prop007',
         activityName: "Photography Club - Urban Exploration Trip",
         clubName: "Photography Club",
         proposedDate: "2025-08-25",
@@ -152,17 +150,15 @@ const activityProposals = [
 
 // --- Mock Resource Bookings Data ---
 const resourceBookings = [
-    // Original bookings from your previous data
-    { id: 'book001', resourceId: 'res001', resourceName: 'Auditorium A', date: '2025-07-16', startTime: '09:00', endTime: '11:00', purpose: 'Drama Club Rehearsal', bookedBy: 'Debate Society', priority: 'low', status: 'Approved' }, // Added priority & status
-    { id: 'book002', resourceId: 'res002', resourceName: 'Meeting Room 1', date: '2025-07-16', startTime: '13:00', endTime: '15:00', purpose: 'IT Society Meeting', bookedBy: 'IT Society', priority: 'low', status: 'Approved' }, // Added priority & status
-    { id: 'book003', resourceId: 'res005', resourceName: 'Projector Unit 1', date: '2025-07-16', startTime: '10:00', endTime: '12:00', purpose: 'Debate Team Practice', bookedBy: 'Debate Society', priority: 'high', status: 'Pending' }, // Added priority & status
-    { id: 'book004', resourceId: 'res008', resourceName: 'Van A', date: '2025-07-17', startTime: '08:00', endTime: '17:00', purpose: 'Field Trip', bookedBy: 'Outdoor Club', priority: 'high', status: 'Approved' }, // Added priority & status
-    { id: 'book005', resourceId: 'res001', resourceName: 'Auditorium A', date: '2025-07-18', startTime: '14:00', endTime: '17:00', purpose: 'Music Club Concert Prep', bookedBy: 'Music Club', priority: 'low', status: 'Pending' }, // Added priority & status
-    { id: 'book006', resourceId: 'res002', resourceName: 'Meeting Room 1', date: '2025-08-01', startTime: '09:00', endTime: '10:30', purpose: 'Admin Staff Meeting', bookedBy: 'Admin', priority: 'high', status: 'Approved' }, // Added priority & status
-    // Bookings from my added sample data (re-IDed to avoid clashes, and adjusted resourceId/resourceName to match combined resources)
+    { id: 'book001', resourceId: 'res001', resourceName: 'Auditorium A', date: '2025-07-16', startTime: '09:00', endTime: '11:00', purpose: 'Drama Club Rehearsal', bookedBy: 'Debate Society', priority: 'low', status: 'Approved' },
+    { id: 'book002', resourceId: 'res002', resourceName: 'Meeting Room 1', date: '2025-07-16', startTime: '13:00', endTime: '15:00', purpose: 'IT Society Meeting', bookedBy: 'IT Society', priority: 'low', status: 'Approved' },
+    { id: 'book003', resourceId: 'res005', resourceName: 'Projector Unit 1', date: '2025-07-16', startTime: '10:00', endTime: '12:00', purpose: 'Debate Team Practice', bookedBy: 'Debate Society', priority: 'high', status: 'Pending' },
+    { id: 'book004', resourceId: 'res008', resourceName: 'Van A', date: '2025-07-17', startTime: '08:00', endTime: '17:00', purpose: 'Field Trip', bookedBy: 'Outdoor Club', priority: 'high', status: 'Approved' },
+    { id: 'book005', resourceId: 'res001', resourceName: 'Auditorium A', date: '2025-07-18', startTime: '14:00', endTime: '17:00', purpose: 'Music Club Concert Prep', bookedBy: 'Music Club', priority: 'low', status: 'Pending' },
+    { id: 'book006', resourceId: 'res002', resourceName: 'Meeting Room 1', date: '2025-08-01', startTime: '09:00', endTime: '10:30', purpose: 'Admin Staff Meeting', bookedBy: 'Admin', priority: 'high', status: 'Approved' },
     {
-        id: 'book007', // Was book001
-        resourceId: 'res010', // Changed from R001 to match new ID
+        id: 'book007',
+        resourceId: 'res010',
         resourceName: 'Main Auditorium',
         date: '2025-09-20',
         startTime: '09:00',
@@ -173,8 +169,8 @@ const resourceBookings = [
         status: 'Approved'
     },
     {
-        id: 'book008', // Was book002
-        resourceId: 'res011', // Changed from R002 to match new ID
+        id: 'book008',
+        resourceId: 'res011',
         resourceName: 'Exhibition Hall A',
         date: '2025-08-15',
         startTime: '10:00',
@@ -185,9 +181,9 @@ const resourceBookings = [
         status: 'Approved'
     },
     {
-        id: 'book009', // Was book003
-        resourceId: 'res013', // Changed from E002 to match new ID
-        resourceName: 'Canon DSLR Camera (Advanced)', // Updated name
+        id: 'book009',
+        resourceId: 'res013',
+        resourceName: 'Canon DSLR Camera (Advanced)',
         date: '2025-08-16',
         startTime: '14:00',
         endTime: '17:00',
@@ -199,7 +195,6 @@ const resourceBookings = [
 ];
 
 // Make these variables globally accessible (for this simple prototype)
-// In a more complex app, you'd use modules or a state management pattern.
 window.mockData = {
     users,
     resources,

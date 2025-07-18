@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CARBS - Resource Manager Dashboard</title>
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/footer.css">
+    <link rel="stylesheet" href="css/forms.css">
+    <style>
+        main {
+            padding: 40px 20px;
+            max-width: 1200px;
+            margin: auto;
+        }
+        .dashboard-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .dashboard-header h2 {
+            font-size: 2.5em;
+            color: #1a2c4e;
+            margin-bottom: 5px;
+        }
+        .controls-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            gap: 20px;
+        }
+        .filter-container {
+            display: flex;
+            align-items: center;
+            flex-grow: 1;
+            gap: 10px;
+        }
+        .filter-container input {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+        .resources-table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #ffffff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            margin-bottom: 40px;
+        }
+        .resources-table th, .resources-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .resources-table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: #555;
+        }
+        .resources-table tbody tr {
+            transition: background-color 0.3s;
+        }
+        .resources-table tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        .action-buttons .btn {
+            padding: 5px 10px;
+            font-size: 0.9em;
+        }
+        
+        /* Modal Styles (shared) */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+        }
+        .close-btn {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            position: absolute;
+            top: 10px;
+            right: 20px;
+        }
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        /* Confirmation and Status Modal Specific Styles */
+        #confirmationModal .modal-content, #statusModal .modal-content {
+            text-align: center;
+            max-width: 400px;
+        }
+        #confirmationModal h3, #statusModal h3 {
+            margin-bottom: 15px;
+        }
+        #confirmationModal p {
+            margin-bottom: 20px;
+        }
+        #statusModal .status-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+        #statusModal .success-icon {
+            color: #28a745;
+        }
+        #statusModal .error-icon {
+            color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div id="header-placeholder"></div>
+    <main>
+        <div class="dashboard-header">
+            <h2>Resource Management</h2>
+            <p class="section-description">Add, update, and delete resources available for booking.</p>
+        </div>
+        <div class="controls-container">
+            <div class="filter-container">
+                <label for="filterInput">Filter Resources:</label>
+                <input type="text" id="filterInput" placeholder="by name or type...">
+            </div>
+            <button id="addResourceBtn" class="btn primary-btn">Add New Resource</button>
+        </div>
+        <table class="resources-table">
+            <thead>
+                <tr>
+                    <th>Resource Name</th>
+                    <th>Type</th>
+                    <th>Location</th>
+                    <th>Quantity</th>
+                    <th>Available</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="resourcesTableBody">
+            </tbody>
+        </table>
+        <p id="noResourcesMessage" style="text-align: center; display: none;">No resources found.</p>
+    </main>
+    <footer>
+        <p>&copy; 2025 CARBS. All rights reserved.</p>
+    </footer>
+
+    <div id="resourceModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" id="resourceModalClose">&times;</span>
+            <h3 id="modalTitle">Add New Resource</h3>
+            <form id="resourceForm">
+                <input type="hidden" id="resourceId">
+                <div class="form-group">
+                    <label for="resourceName">Resource Name:</label>
+                    <input type="text" id="resourceName" name="resourceName" required>
+                </div>
+                <div class="form-group">
+                    <label for="resourceType">Type:</label>
+                    <input type="text" id="resourceType" name="resourceType" required>
+                </div>
+                <div class="form-group">
+                    <label for="resourceLocation">Location:</label>
+                    <input type="text" id="resourceLocation" name="resourceLocation" required>
+                </div>
+                <div class="form-group">
+                    <label for="resourceQuantity">Quantity:</label>
+                    <input type="number" id="resourceQuantity" name="resourceQuantity" min="1" required>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn secondary-btn" id="cancelBtn">Cancel</button>
+                    <button type="submit" class="btn primary-btn">Save Resource</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="confirmationModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" id="confirmModalClose">&times;</span>
+            <h3 id="confirmTitle">Confirm Action</h3>
+            <p id="confirmMessage">Are you sure you want to delete this resource?</p>
+            <div class="form-actions">
+                <button class="btn secondary-btn" id="confirmCancelBtn">Cancel</button>
+                <button class="btn logout-btn" id="confirmDeleteBtn">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="statusModal" class="modal">
+        <div class="modal-content">
+            <h3 id="statusTitle">Action Successful</h3>
+            <p id="statusMessage">Resource has been successfully updated.</p>
+            <button class="btn primary-btn" id="statusOkBtn">OK</button>
+        </div>
+    </div>
+
+    <script src="js/data.js"></script>
+    <script src="js/load_rm_header.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+
+            const resourcesTableBody = document.getElementById('resourcesTableBody');
+            const noResourcesMessage = document.getElementById('noResourcesMessage');
+            const addResourceBtn = document.getElementById('addResourceBtn');
+            const filterInput = document.getElementById('filterInput');
+
+            // Resource Form Modal Elements
+            const resourceModal = document.getElementById('resourceModal');
+            const resourceModalClose = document.getElementById('resourceModalClose');
+            const cancelBtn = document.getElementById('cancelBtn');
+            const resourceForm = document.getElementById('resourceForm');
+            const modalTitle = document.getElementById('modalTitle');
+            const resourceIdInput = document.getElementById('resourceId');
+            const resourceNameInput = document.getElementById('resourceName');
+            const resourceTypeInput = document.getElementById('resourceType');
+            const resourceLocationInput = document.getElementById('resourceLocation');
+            const resourceQuantityInput = document.getElementById('resourceQuantity');
+
+            // Confirmation Modal Elements
+            const confirmationModal = document.getElementById('confirmationModal');
+            const confirmModalClose = document.getElementById('confirmModalClose');
+            const confirmCancelBtn = document.getElementById('confirmCancelBtn');
+            const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+            let resourceToDeleteId = null;
+
+            // Status Modal Elements
+            const statusModal = document.getElementById('statusModal');
+            const statusTitle = document.getElementById('statusTitle');
+            const statusMessage = document.getElementById('statusMessage');
+            const statusOkBtn = document.getElementById('statusOkBtn');
+
+            function renderResourcesTable(filterText = '') {
+                resourcesTableBody.innerHTML = '';
+                const resources = window.mockData.resources;
+
+                const filteredResources = resources.filter(res => {
+                    const searchTerm = filterText.toLowerCase();
+                    return res.resourceName.toLowerCase().includes(searchTerm) || 
+                           res.type.toLowerCase().includes(searchTerm);
+                });
+
+                if (filteredResources.length > 0) {
+                    noResourcesMessage.style.display = 'none';
+                    filteredResources.forEach(resource => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${resource.resourceName}</td>
+                            <td>${resource.type}</td>
+                            <td>${resource.location}</td>
+                            <td>${resource.quantity}</td>
+                            <td>${resource.available}</td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn secondary-btn update-btn" data-id="${resource.id}">Update</button>
+                                    <button class="btn logout-btn delete-btn" data-id="${resource.id}">Delete</button>
+                                </div>
+                            </td>
+                        `;
+                        resourcesTableBody.appendChild(row);
+                    });
+                } else {
+                    noResourcesMessage.style.display = 'block';
+                }
+            }
+
+            // MODAL FUNCTIONS
+            function showResourceModal(resource = null) {
+                resourceForm.reset();
+                if (resource) {
+                    modalTitle.textContent = 'Update Resource';
+                    resourceIdInput.value = resource.id;
+                    resourceNameInput.value = resource.resourceName;
+                    resourceTypeInput.value = resource.type;
+                    resourceLocationInput.value = resource.location;
+                    resourceQuantityInput.value = resource.quantity;
+                } else {
+                    modalTitle.textContent = 'Add New Resource';
+                    resourceIdInput.value = '';
+                }
+                resourceModal.style.display = 'flex';
+            }
+
+            function closeResourceModal() {
+                resourceModal.style.display = 'none';
+            }
+
+            function showConfirmationModal(id) {
+                resourceToDeleteId = id;
+                confirmationModal.style.display = 'flex';
+            }
+
+            function closeConfirmationModal() {
+                confirmationModal.style.display = 'none';
+                resourceToDeleteId = null;
+            }
+
+            function showStatusModal(isSuccess, message) {
+                statusTitle.textContent = isSuccess ? 'Success' : 'Error';
+                statusMessage.innerHTML = message;
+                statusModal.style.display = 'flex';
+            }
+            
+            function closeStatusModal() {
+                statusModal.style.display = 'none';
+            }
+
+            // EVENT LISTENERS
+            addResourceBtn.addEventListener('click', () => showResourceModal());
+            resourceModalClose.addEventListener('click', closeResourceModal);
+            cancelBtn.addEventListener('click', closeResourceModal);
+            confirmModalClose.addEventListener('click', closeConfirmationModal);
+            confirmCancelBtn.addEventListener('click', closeConfirmationModal);
+            statusOkBtn.addEventListener('click', closeStatusModal);
+            
+            filterInput.addEventListener('keyup', (event) => {
+                const filterText = event.target.value;
+                renderResourcesTable(filterText);
+            });
+
+            window.addEventListener('click', (event) => {
+                if (event.target === resourceModal) {
+                    closeResourceModal();
+                } else if (event.target === confirmationModal) {
+                    closeConfirmationModal();
+                } else if (event.target === statusModal) {
+                    closeStatusModal();
+                }
+            });
+
+            resourceForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+                const id = resourceIdInput.value;
+                const resourceName = resourceNameInput.value;
+                const type = resourceTypeInput.value;
+                const location = resourceLocationInput.value;
+                const quantity = parseInt(resourceQuantityInput.value, 10);
+
+                if (id) {
+                    // Update existing resource
+                    const index = window.mockData.resources.findIndex(res => res.id === id);
+                    if (index !== -1) {
+                        window.mockData.resources[index].resourceName = resourceName;
+                        window.mockData.resources[index].type = type;
+                        window.mockData.resources[index].location = location;
+                        window.mockData.resources[index].quantity = quantity;
+                        // For simplicity, we assume all quantity is available on update
+                        window.mockData.resources[index].available = quantity;
+                        showStatusModal(true, `Resource "${resourceName}" has been successfully updated.`);
+                    }
+                } else {
+                    // Add new resource
+                    const newId = `res${String(window.mockData.resources.length + 1).padStart(3, '0')}`;
+                    const newResource = {
+                        id: newId,
+                        resourceName: resourceName,
+                        type: type,
+                        location: location,
+                        quantity: quantity,
+                        available: quantity,
+                    };
+                    window.mockData.resources.push(newResource);
+                    showStatusModal(true, `New resource "${resourceName}" has been successfully added.`);
+                }
+
+                closeResourceModal();
+                renderResourcesTable(filterInput.value);
+            });
+
+            resourcesTableBody.addEventListener('click', function(event) {
+                const target = event.target;
+                const id = target.dataset.id;
+                
+                if (target.classList.contains('update-btn')) {
+                    const resource = window.mockData.resources.find(res => res.id === id);
+                    if (resource) {
+                        showResourceModal(resource);
+                    }
+                } else if (target.classList.contains('delete-btn')) {
+                    showConfirmationModal(id);
+                }
+            });
+
+            confirmDeleteBtn.addEventListener('click', function() {
+                if (resourceToDeleteId) {
+                    const resourceToDelete = window.mockData.resources.find(res => res.id === resourceToDeleteId);
+                    window.mockData.resources = window.mockData.resources.filter(res => res.id !== resourceToDeleteId);
+                    
+                    showStatusModal(true, `Resource "${resourceToDelete.resourceName}" has been successfully deleted.`);
+                    closeConfirmationModal();
+                    renderResourcesTable(filterInput.value);
+                }
+            });
+
+            renderResourcesTable();
+        });
+    </script>
+</body>
+</html>

@@ -1,270 +1,344 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>CARBS - Admin Resource Availability</title>
-  <link rel="stylesheet" href="css/global.css" />
-  <link rel="stylesheet" href="css/footer.css" />
-  <link rel="stylesheet" href="css/availability.css" />
-  <style>
-    .availability-legend {
-      margin-top: 16px;
-      margin-bottom: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      font-size: 0.95em;
-    }
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>CARBS - Admin Resource Availability</title>
+    <link rel="stylesheet" href="css/global.css" />
+    <link rel="stylesheet" href="css/footer.css" />
+    <link rel="stylesheet" href="css/availability.css" />
+    <style>
+        .availability-legend {
+            margin-top: 16px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            font-size: 0.95em;
+        }
 
-    .legend-item {
-      padding: 6px 16px;
-      border-radius: 6px;
-      font-weight: 600;
-      font-size: 0.9em;
-    }
+        .legend-item {
+            padding: 6px 16px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
 
-    .legend-item.available {
-      background-color: #28a745;
-      color: white;
-    }
+        .legend-item.available {
+            background-color: #28a745;
+            color: white;
+        }
 
-    .legend-item.occupied {
-      background-color: #dc3545;
-      color: white;
-    }
+        .legend-item.occupied {
+            background-color: #dc3545;
+            color: white;
+        }
 
-    .control-buttons {
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      margin-top: 30px;
-      margin-bottom: 30px;
-    }
+        .control-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+            margin-bottom: 30px;
+        }
 
-    .control-buttons .btn {
-      padding: 12px 24px;
-      font-size: 1em;
-      font-weight: bold;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-    }
+        .control-buttons .btn {
+            padding: 12px 24px;
+            font-size: 1em;
+            font-weight: bold;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
 
-    .mark-occupied {
-      background-color: #dc3545;
-      color: white;
-    }
+        .mark-occupied {
+            background-color: #dc3545;
+            color: white;
+        }
 
-    .mark-available {
-      background-color: #28a745;
-      color: white;
-    }
+        .mark-available {
+            background-color: #28a745;
+            color: white;
+        }
 
-    .time-slot.selected {
-      outline: 3px solid #007bff;
-    }
-  </style>
+        .time-slot.selected {
+            outline: 3px solid #007bff;
+        }
+        
+        /* Time grid styles from previous code */
+        .time-header-grid, .resources-availability .resource-row {
+            display: grid;
+            grid-template-columns: 200px repeat(11, 1fr);
+            gap: 5px;
+            text-align: center;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        .resource-label-column, .resource-name {
+            font-weight: 600;
+            text-align: left;
+        }
+        .time-slot-header {
+            font-weight: 600;
+            padding: 5px;
+            background-color: #f0f0f0;
+            border-radius: 4px;
+        }
+        .time-slot {
+            height: 40px;
+            border-radius: 4px;
+        }
+        .time-slot.available {
+            background-color: #e6f7e9;
+            border: 1px solid #28a745;
+        }
+        .time-slot.occupied {
+            background-color: #f7e6e6;
+            border: 1px solid #dc3545;
+            cursor: pointer;
+        }
+        .initial-message {
+            text-align: center;
+            color: #888;
+            padding: 20px;
+        }
+    </style>
 </head>
 <body>
-  <div id="header-placeholder"></div>
-  <main>
-    <section class="availability-container">
-      <h2>Real-Time Resource Availability</h2>
-      <p class="section-description">
-        Select a date to view the real-time availability of all resources and
-        details of confirmed bookings.
-      </p>
+    <div id="header-placeholder"></div>
+    <main>
+        <section class="availability-container">
+            <h2>Real-Time Resource Availability</h2>
+            <p class="section-description">
+                Select a date to view the real-time availability of all resources and
+                details of confirmed bookings.
+            </p>
 
-      <div class="date-selector">
-        <label for="selectDay">Day:</label>
-        <select id="selectDay"></select>
-        <label for="selectMonth">Month:</label>
-        <select id="selectMonth"></select>
-        <label for="selectYear">Year:</label>
-        <select id="selectYear"></select>
-        <button class="btn" id="checkDateBtn">Go</button>
-      </div>
+            <div class="date-selector">
+                <label for="selectDay">Day:</label>
+                <select id="selectDay"></select>
+                <label for="selectMonth">Month:</label>
+                <select id="selectMonth"></select>
+                <label for="selectYear">Year:</label>
+                <select id="selectYear"></select>
+                <button class="btn" id="checkDateBtn">Go</button>
+            </div>
 
-      <div class="availability-legend">
-        <span>Legend:</span>
-        <span class="legend-item available">Available</span>
-        <span class="legend-item occupied">Occupied</span>
-      </div>
+            <div class="availability-legend">
+                <span>Legend:</span>
+                <span class="legend-item available">Available</span>
+                <span class="legend-item occupied">Occupied</span>
+            </div>
 
-      <div class="time-header-grid">
-        <div class="resource-label-column"></div>
-        <div class="time-slot-header">8 AM</div>
-        <div class="time-slot-header">9 AM</div>
-        <div class="time-slot-header">10 AM</div>
-        <div class="time-slot-header">11 AM</div>
-        <div class="time-slot-header">12 PM</div>
-        <div class="time-slot-header">1 PM</div>
-        <div class="time-slot-header">2 PM</div>
-        <div class="time-slot-header">3 PM</div>
-        <div class="time-slot-header">4 PM</div>
-        <div class="time-slot-header">5 PM</div>
-        <div class="time-slot-header">6 PM</div>
-      </div>
+            <div class="time-header-grid">
+                <div class="resource-label-column"></div>
+                <div class="time-slot-header">8 AM</div>
+                <div class="time-slot-header">9 AM</div>
+                <div class="time-slot-header">10 AM</div>
+                <div class="time-slot-header">11 AM</div>
+                <div class="time-slot-header">12 PM</div>
+                <div class="time-slot-header">1 PM</div>
+                <div class="time-slot-header">2 PM</div>
+                <div class="time-slot-header">3 PM</div>
+                <div class="time-slot-header">4 PM</div>
+                <div class="time-slot-header">5 PM</div>
+                <div class="time-slot-header">6 PM</div>
+            </div>
 
-      <div id="resourcesAvailability" class="resources-availability">
-        <p class="initial-message">
-          Select a date above to view resource availability.
-        </p>
-      </div>
+            <div id="resourcesAvailability" class="resources-availability">
+                <p class="initial-message">
+                    Select a date above to view resource availability.
+                </p>
+            </div>
 
-      <div class="control-buttons">
-        <button class="btn mark-occupied" id="markOccupiedBtn">Mark Occupied</button>
-        <button class="btn mark-available" id="markAvailableBtn">Mark Available</button>
-      </div>
-    </section>
-  </main>
+            <div class="control-buttons">
+                <button class="btn mark-occupied" id="markOccupiedBtn">Mark Occupied</button>
+                <button class="btn mark-available" id="markAvailableBtn">Mark Available</button>
+            </div>
+        </section>
+    </main>
 
-  <footer>
-    <p>&copy; 2025 CARBS. All rights reserved.</p>
-  </footer>
+    <footer>
+        <p>&copy; 2025 CARBS. All rights reserved.</p>
+    </footer>
 
-  <script src="js/admin_load_header.js"></script>
-  <script src="js/data.js"></script>
-  <script>
-    const timeSlots = Array.from({ length: 11 }, (_, i) => {
-      const hour = 8 + i;
-      return `${String(hour).padStart(2, "0")}:00`;
-    });
+    <script src="js/admin_load_header.js"></script>
+    <script src="js/data.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            
+            const timeSlots = Array.from({ length: 11 }, (_, i) => ({
+                hour: 8 + i,
+                label: `${8 + i} ${8 + i < 12 ? 'AM' : 'PM'}`,
+                timeString: `${String(8 + i).padStart(2, '0')}:00`
+            }));
+            
+            let selectedSlotElement = null;
 
-    const resourcesToShow = window.mockData.resources.map((res) => res.name);
-    let selectedSlot = null;
-
-    document.addEventListener("DOMContentLoaded", function () {
-      const selectDay = document.getElementById("selectDay");
-      const selectMonth = document.getElementById("selectMonth");
-      const selectYear = document.getElementById("selectYear");
-      const checkDateBtn = document.getElementById("checkDateBtn");
-      const resourcesAvailabilityDiv = document.getElementById("resourcesAvailability");
-      const markOccupiedBtn = document.getElementById("markOccupiedBtn");
-      const markAvailableBtn = document.getElementById("markAvailableBtn");
-
-      for (let i = 1; i <= 31; i++) {
-        selectDay.innerHTML += `<option value="${String(i).padStart(2, "0")}">${i}</option>`;
-      }
-
-      const months = [
-        "January", "February", "March", "April", "May", "June",
-        "July", "August", "September", "October", "November", "December"
-      ];
-      months.forEach((month, index) => {
-        selectMonth.innerHTML += `<option value="${String(index + 1).padStart(2, "0")}">${month}</option>`;
-      });
-
-      const currentYear = new Date().getFullYear();
-      for (let i = currentYear - 1; i <= currentYear + 2; i++) {
-        selectYear.innerHTML += `<option value="${i}">${i}</option>`;
-      }
-
-      const today = new Date();
-      selectDay.value = String(today.getDate()).padStart(2, "0");
-      selectMonth.value = String(today.getMonth() + 1).padStart(2, "0");
-      selectYear.value = String(today.getFullYear());
-
-      checkDateBtn.addEventListener("click", displayAvailability);
-      markOccupiedBtn.addEventListener("click", () => updateSlotStatus("occupied"));
-      markAvailableBtn.addEventListener("click", () => updateSlotStatus("available"));
-
-      displayAvailability();
-
-      function displayAvailability() {
-        selectedSlot = null;
-        const selectedDate = `${selectYear.value}-${selectMonth.value}-${selectDay.value}`;
-        resourcesAvailabilityDiv.innerHTML = "";
-
-        resourcesToShow.forEach((resourceName) => {
-          const resourceRow = document.createElement("div");
-          resourceRow.classList.add("resource-row");
-
-          const resourceNameDiv = document.createElement("div");
-          resourceNameDiv.classList.add("resource-name");
-          resourceNameDiv.textContent = resourceName;
-          resourceRow.appendChild(resourceNameDiv);
-
-          timeSlots.forEach((slotTime) => {
-            const timeSlotDiv = document.createElement("div");
-            timeSlotDiv.classList.add("time-slot", "available");
-
-            const booking = window.mockData.resourceBookings.find(
-              (b) =>
-                b.resourceName === resourceName &&
-                b.date === selectedDate &&
-                slotTime >= b.startTime &&
-                slotTime < b.endTime
-            );
-
-            if (booking) {
-              timeSlotDiv.classList.remove("available");
-              timeSlotDiv.classList.add("occupied");
-              timeSlotDiv.title = `Booked by ${booking.bookedBy} (${booking.startTime}-${booking.endTime})`;
+            const selectDay = document.getElementById("selectDay");
+            const selectMonth = document.getElementById("selectMonth");
+            const selectYear = document.getElementById("selectYear");
+            const checkDateBtn = document.getElementById("checkDateBtn");
+            const resourcesAvailabilityDiv = document.getElementById("resourcesAvailability");
+            const markOccupiedBtn = document.getElementById("markOccupiedBtn");
+            const markAvailableBtn = document.getElementById("markAvailableBtn");
+            
+            // Populate Day, Month, Year
+            const today = new Date();
+            const currentYear = today.getFullYear();
+            
+            for (let i = 1; i <= 31; i++) {
+                const option = document.createElement("option");
+                option.value = String(i).padStart(2, "0");
+                option.textContent = i;
+                selectDay.appendChild(option);
+            }
+            const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            months.forEach((month, index) => {
+                const option = document.createElement("option");
+                option.value = String(index + 1).padStart(2, "0");
+                option.textContent = month;
+                selectMonth.appendChild(option);
+            });
+            for (let i = currentYear - 1; i <= currentYear + 2; i++) {
+                const option = document.createElement("option");
+                option.value = i;
+                option.textContent = i;
+                selectYear.appendChild(option);
             }
 
-            timeSlotDiv.addEventListener("click", function () {
-              if (selectedSlot) selectedSlot.classList.remove("selected");
-              timeSlotDiv.classList.add("selected");
-              selectedSlot = timeSlotDiv;
-            });
+            selectDay.value = String(today.getDate()).padStart(2, "0");
+            selectMonth.value = String(today.getMonth() + 1).padStart(2, "0");
+            selectYear.value = String(today.getFullYear());
 
-            resourceRow.appendChild(timeSlotDiv);
-          });
+            checkDateBtn.addEventListener("click", displayAvailability);
+            markOccupiedBtn.addEventListener("click", () => updateSlotStatus("occupied"));
+            markAvailableBtn.addEventListener("click", () => updateSlotStatus("available"));
 
-          resourcesAvailabilityDiv.appendChild(resourceRow);
+            displayAvailability();
+
+            function displayAvailability() {
+                if (selectedSlotElement) {
+                    selectedSlotElement.classList.remove("selected");
+                    selectedSlotElement = null;
+                }
+
+                const selectedDate = `${selectYear.value}-${selectMonth.value}-${selectDay.value}`;
+                resourcesAvailabilityDiv.innerHTML = "";
+
+                const allResources = window.mockData.resources;
+                const allBookings = window.mockData.resourceBookings;
+
+                allResources.forEach((resource) => {
+                    const resourceRow = document.createElement("div");
+                    resourceRow.classList.add("resource-row");
+
+                    const resourceNameDiv = document.createElement("div");
+                    resourceNameDiv.classList.add("resource-name");
+                    resourceNameDiv.textContent = resource.resourceName;
+                    resourceRow.appendChild(resourceNameDiv);
+
+                    timeSlots.forEach((slot) => {
+                        const slotDiv = document.createElement("div");
+                        slotDiv.classList.add("time-slot");
+                        slotDiv.dataset.resourceId = resource.id;
+                        slotDiv.dataset.timeString = slot.timeString;
+
+                        const booking = allBookings.find((b) =>
+                            b.resourceId === resource.id &&
+                            b.date === selectedDate &&
+                            isBookedForSlot(b.startTime, b.endTime, slot.timeString)
+                        );
+
+                        if (booking) {
+                            slotDiv.classList.add("occupied");
+                            slotDiv.title = `Booked by ${booking.bookedBy} (${booking.startTime}–${booking.endTime})`;
+                        } else {
+                            slotDiv.classList.add("available");
+                        }
+
+                        slotDiv.addEventListener("click", function () {
+                            if (selectedSlotElement) selectedSlotElement.classList.remove("selected");
+                            slotDiv.classList.add("selected");
+                            selectedSlotElement = slotDiv;
+                        });
+
+                        resourceRow.appendChild(slotDiv);
+                    });
+                    resourcesAvailabilityDiv.appendChild(resourceRow);
+                });
+            }
+
+            function updateSlotStatus(status) {
+                if (!selectedSlotElement) {
+                    alert("Please select a time slot first.");
+                    return;
+                }
+
+                const resourceId = selectedSlotElement.dataset.resourceId;
+                const slotTime = selectedSlotElement.dataset.timeString;
+                const selectedDate = `${selectYear.value}-${selectMonth.value}-${selectDay.value}`;
+                const resource = window.mockData.resources.find(res => res.id === resourceId);
+                const resourceName = resource ? resource.resourceName : "Unknown Resource";
+                
+                const existingBookingIndex = window.mockData.resourceBookings.findIndex(
+                    (b) =>
+                        b.resourceId === resourceId &&
+                        b.date === selectedDate &&
+                        isBookedForSlot(b.startTime, b.endTime, slotTime)
+                );
+
+                if (status === "occupied") {
+                    if (existingBookingIndex === -1) {
+                        const newBooking = {
+                            id: `book${String(window.mockData.resourceBookings.length + 1).padStart(3, '0')}`,
+                            resourceId: resourceId,
+                            resourceName: resourceName,
+                            date: selectedDate,
+                            startTime: slotTime,
+                            endTime: getNextSlotTime(slotTime),
+                            purpose: "Admin Manual Booking",
+                            bookedBy: "Admin",
+                            priority: "high",
+                            status: "Approved"
+                        };
+                        window.mockData.resourceBookings.push(newBooking);
+                        alert(`Successfully marked ${resourceName} as occupied on ${selectedDate} at ${slotTime}.`);
+                    } else {
+                        alert("This slot is already booked.");
+                    }
+                } else if (status === "available") {
+                    if (existingBookingIndex !== -1) {
+                        // Check if it's a manual booking to prevent accidental deletion of a real one
+                        if (window.mockData.resourceBookings[existingBookingIndex].bookedBy === 'Admin' && window.mockData.resourceBookings[existingBookingIndex].purpose === 'Admin Manual Booking') {
+                             window.mockData.resourceBookings.splice(existingBookingIndex, 1);
+                             alert(`Successfully marked ${resourceName} as available on ${selectedDate} at ${slotTime}.`);
+                        } else {
+                            alert("This is an existing booking. You cannot delete it from this view.");
+                        }
+                    } else {
+                        alert("This slot is already available.");
+                    }
+                }
+                displayAvailability();
+            }
+
+            function isBookedForSlot(bookingStart, bookingEnd, slotTime) {
+                const bookingStartTime = new Date(`2025/01/01 ${bookingStart}`);
+                const bookingEndTime = new Date(`2025/01/01 ${bookingEnd}`);
+                const slotStartTime = new Date(`2025/01/01 ${slotTime}`);
+                const slotEndTime = new Date(slotStartTime.getTime() + 60 * 60 * 1000);
+
+                return (bookingStartTime < slotEndTime && bookingEndTime > slotStartTime);
+            }
+
+            function getNextSlotTime(time) {
+                const [h, m] = time.split(":").map(Number);
+                const date = new Date(2000, 0, 1, h + 1, m);
+                return `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
+            }
         });
-      }
-
-      function updateSlotStatus(status) {
-        if (!selectedSlot) return;
-
-        const resourceRow = selectedSlot.parentElement;
-        const resourceName = resourceRow.querySelector('.resource-name').textContent;
-        const selectedDate = `${selectYear.value}-${selectMonth.value}-${selectDay.value}`;
-        const timeIndex = Array.from(selectedSlot.parentElement.children).indexOf(selectedSlot) - 1;
-        const slotTime = timeSlots[timeIndex];
-
-        selectedSlot.classList.remove("available", "occupied");
-        selectedSlot.classList.add(status);
-
-        const existing = window.mockData.resourceBookings.find(
-          (b) =>
-            b.resourceName === resourceName &&
-            b.date === selectedDate &&
-            slotTime >= b.startTime &&
-            slotTime < b.endTime
-        );
-
-        if (status === "occupied") {
-          if (!existing) {
-            window.mockData.resourceBookings.push({
-              id: `book${String(window.mockData.resourceBookings.length + 1).padStart(3, '0')}`,
-              resourceId: "res000",
-              resourceName,
-              date: selectedDate,
-              startTime: slotTime,
-              endTime: getNextSlotTime(slotTime),
-              purpose: "Manual Booking",
-              bookedBy: "Admin",
-              priority: "low",
-              status: "Approved"
-            });
-          }
-        } else if (status === "available" && existing) {
-          const index = window.mockData.resourceBookings.indexOf(existing);
-          if (index !== -1) window.mockData.resourceBookings.splice(index, 1);
-        }
-      }
-
-      function getNextSlotTime(time) {
-        const [h, m] = time.split(":").map(Number);
-        const date = new Date(2000, 0, 1, h + 1, m);
-        return `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
-      }
-    });
-  </script>
+    </script>
 </body>
 </html>

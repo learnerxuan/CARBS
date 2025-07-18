@@ -6,7 +6,7 @@
   <title>CARBS - Manage Resource Bookings</title>
   <link rel="stylesheet" href="css/global.css" />
   <link rel="stylesheet" href="css/footer.css" />
-  <script src="js/data.js"></script> <!-- Ensure this is loaded before DOMContentLoaded -->
+  <script src="js/data.js"></script>
   <style>
     main {
       padding: 40px 20px;
@@ -16,13 +16,26 @@
 
     .proposals-header {
       text-align: center;
-      margin-bottom: 40px;
+      margin-bottom: 20px;
     }
 
     .proposals-header h2 {
       font-size: 2.5em;
       color: #1a2c4e;
       margin-bottom: 5px;
+    }
+
+    .filter-controls {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .filter-controls input {
+      padding: 8px 12px;
+      font-size: 1em;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      width: 300px;
     }
 
     .proposals-table {
@@ -35,8 +48,7 @@
       margin-bottom: 40px;
     }
 
-    .proposals-table th,
-    .proposals-table td {
+    .proposals-table th, .proposals-table td {
       padding: 15px;
       text-align: left;
       border-bottom: 1px solid #e0e0e0;
@@ -74,6 +86,7 @@
     .action-btn.approve {
       background-color: #28a745;
       color: white;
+      margin-right: 5px;
     }
 
     .action-btn.reject {
@@ -83,6 +96,7 @@
 
     .action-btn.disabled {
       background-color: #6c757d;
+      color: black;
       cursor: not-allowed;
     }
   </style>
@@ -94,6 +108,10 @@
     <div class="proposals-header">
       <h2>Manage Resource Bookings</h2>
       <p class="section-description">View, approve, or reject all resource bookings.</p>
+    </div>
+
+    <div class="filter-controls">
+      <input type="text" id="filterInput" placeholder="Filter by resource name or status...">
     </div>
 
     <table class="proposals-table">
@@ -117,38 +135,79 @@
 
   <script src="js/admin_load_header.js"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      const allBookings = window.mockData.resourceBookings;
-      const tableBody = document.getElementById('bookingsTableBody');
+    const tableBody = document.getElementById('bookingsTableBody');
+    const filterInput = document.getElementById('filterInput');
 
+    function renderTable(bookings) {
       tableBody.innerHTML = '';
-
-      allBookings.forEach(booking => {
-        const row = document.createElement('tr');
+      bookings.forEach((booking, index) => {
         const statusClass = `status-${booking.status.toLowerCase()}`;
         const timeSlot = `${booking.startTime} - ${booking.endTime}`;
         const viewUrl = `admin_view_resources_bookings.html?id=${booking.id}`;
 
-        const actionButtons =
-          booking.status === 'Pending'
-            ? `<td>
-                  <button class="action-btn approve">Approve</button>
-                  <button class="action-btn reject">Reject</button>
-               </td>`
-            : `<td>
-                  <button class="action-btn disabled">${booking.status}</button>
-               </td>`;
-
+        const row = document.createElement('tr');
         row.innerHTML = `
           <td><a href="${viewUrl}" style="text-decoration: underline; color: #007bff;">${booking.resourceName}</a></td>
           <td>${booking.bookedBy}</td>
           <td>${booking.date}</td>
           <td>${timeSlot}</td>
           <td><span class="${statusClass}">${booking.status}</span></td>
-          ${actionButtons}
+          <td>
+            ${
+              booking.status === 'Pending'
+                ? `
+                  <button class="action-btn approve" data-id="${booking.id}">Approve</button>
+                  <button class="action-btn reject" data-id="${booking.id}">Reject</button>
+                `
+                : `<button class="action-btn disabled" disabled>${booking.status}</button>`
+            }
+          </td>
         `;
-
         tableBody.appendChild(row);
+      });
+
+      attachActionListeners();
+    }
+
+    function attachActionListeners() {
+      const approveButtons = document.querySelectorAll('.approve');
+      const rejectButtons = document.querySelectorAll('.reject');
+
+      approveButtons.forEach(btn => {
+        btn.addEventListener('click', function () {
+          updateBookingStatus(this.dataset.id, 'Approved');
+        });
+      });
+
+      rejectButtons.forEach(btn => {
+        btn.addEventListener('click', function () {
+          updateBookingStatus(this.dataset.id, 'Rejected');
+        });
+      });
+    }
+
+    function updateBookingStatus(id, newStatus) {
+      const booking = window.mockData.resourceBookings.find(b => b.id === id);
+      if (booking) {
+        booking.status = newStatus;
+        renderTable(filterBookings());
+      }
+    }
+
+    function filterBookings() {
+      const search = filterInput.value.toLowerCase();
+      return window.mockData.resourceBookings.filter(b =>
+        b.resourceName.toLowerCase().includes(search) ||
+        b.status.toLowerCase().includes(search)
+      );
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderTable(window.mockData.resourceBookings);
+
+      filterInput.addEventListener('input', () => {
+        const filtered = filterBookings();
+        renderTable(filtered);
       });
     });
   </script>
