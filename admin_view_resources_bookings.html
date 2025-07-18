@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CARBS - View Booking</title>
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/forms.css">
+</head>
+<body>
+  <div id="header-placeholder"></div>
+
+  <main>
+    <section class="form-container">
+      <h2>View Booking Details</h2>
+      <p class="form-description">Review all information related to this resource booking.</p>
+
+      <form id="bookingViewForm">
+        <div class="form-group">
+          <label for="resourceType">Resource Type:</label>
+          <input type="text" id="resourceType" name="resourceType" readonly>
+        </div>
+
+        <div class="form-group">
+          <label for="resourceName">Resource Name:</label>
+          <input type="text" id="resourceName" name="resourceName" readonly>
+        </div>
+
+        <div class="form-group">
+          <label for="bookingDate">Date:</label>
+          <input type="date" id="bookingDate" name="bookingDate" readonly>
+        </div>
+
+        <div class="form-group">
+          <label for="bookingStartTime">Start Time:</label>
+          <input type="time" id="bookingStartTime" name="bookingStartTime" readonly>
+        </div>
+
+        <div class="form-group">
+          <label for="bookingEndTime">End Time:</label>
+          <input type="time" id="bookingEndTime" name="bookingEndTime" readonly>
+        </div>
+
+        <div class="form-group">
+          <label for="purpose">Purpose:</label>
+          <textarea id="purpose" name="purpose" rows="4" readonly></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="clubBooking">Club Name:</label>
+          <input type="text" id="clubBooking" name="clubBooking" readonly>
+        </div>
+
+        <div class="form-group">
+          <label for="priority">Priority:</label>
+          <input type="text" id="priority" name="priority" readonly>
+        </div>
+
+        <div class="form-group">
+          <label for="status">Booking Status:</label>
+          <input type="text" id="status" name="status" readonly>
+        </div>
+        <div class="form-actions">
+                    <button type="button" class="btn secondary-btn" onclick="window.history.back();">Back to List</button>
+                </div>
+      </form>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 CARBS. All rights reserved.</p>
+  </footer>
+
+  <script src="js/admin_load_header.js"></script>
+  <script src="js/data.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const urlParams = new URLSearchParams(window.location.search);
+      const bookingId = urlParams.get('id');
+      const booking = window.mockData.resourceBookings.find(b => b.id === bookingId);
+
+      if (!booking) {
+        alert('Booking not found!');
+        return;
+      }
+
+      const resource = window.mockData.resources.find(r => r.id === booking.resourceId);
+      const resourceType = resource ? resource.type : 'N/A';
+
+      document.getElementById('resourceType').value = resourceType;
+      document.getElementById('resourceName').value = booking.resourceName;
+      document.getElementById('bookingDate').value = booking.date;
+      document.getElementById('bookingStartTime').value = booking.startTime;
+      document.getElementById('bookingEndTime').value = booking.endTime;
+      document.getElementById('purpose').value = booking.purpose;
+      document.getElementById('clubBooking').value = booking.bookedBy;
+      document.getElementById('priority').value = booking.priority;
+      document.getElementById('status').value = booking.status;
+    });
+  </script>
+</body>
+</html>

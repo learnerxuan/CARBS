@@ -318,19 +318,17 @@
         // Mock chat data for a conversation between a Club Leader and an Administrator
 
         let mockChatHistory = [
-
           {
             sender: "You (Photography Club)",
             message:
-              'Hello. I need to cancel our proposed activity, "Debate Tournament 2025", which is currently pending approval.',
+              'Hello. I need to cancel our proposed activity, "Photography Tournament 2025", which is currently pending approval.',
             type: "self",
             timestamp: "10:05 AM",
           },
 
           {
             sender: "Student Affairs Administrator",
-            message:
-              "Understood, Noted.",
+            message: "Understood, Noted.",
             type: "other",
             timestamp: "10:06 AM",
           },
@@ -409,7 +407,7 @@
             )} ${ampm}`;
 
             mockChatHistory.push({
-              sender: "You (Debate Society)", // Simulating current user
+              sender: "You (Photography Society)", // Simulating current user
 
               message: messageText,
 
