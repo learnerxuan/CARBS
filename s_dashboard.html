@@ -151,12 +151,6 @@
     <script src="js/data.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const userRole = sessionStorage.getItem('userRole');
-            if (!userRole || (userRole !== 'Student' && userRole !== 'Admin')) {
-                alert('Access Denied. Please log in as a student.');
-                window.location.href = 'login.html';
-                return;
-            }
 
             const allActivities = window.mockData.activityProposals;
             const tableBody = document.getElementById('activitiesTableBody');

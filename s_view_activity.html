@@ -61,13 +61,8 @@
     <script src="js/data.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Basic role check
-            const userRole = sessionStorage.getItem('userRole');
-            if (!userRole || (userRole !== 'Student' && userRole !== 'Admin')) {
-                alert('Access Denied. Please log in as a student.');
-                window.location.href = 'login.html';
-                return;
-            }
+            // Simulate a logged-in user for the prototype
+            const loggedInUser = window.mockData.users.find(u => u.role === 'Student');
 
             const urlParams = new URLSearchParams(window.location.search);
             const activityId = urlParams.get('id');
@@ -86,12 +81,6 @@
 
             const registerBtn = document.getElementById('registerBtn');
             registerBtn.addEventListener('click', function() {
-                const loggedInUser = JSON.parse(sessionStorage.getItem('loggedInUser'));
-
-                if (!loggedInUser) {
-                    alert('You must be logged in to register.');
-                    return;
-                }
 
                 // Simulate registration by adding a new entry to mock data
                 if (!window.mockData.activityRegistrations) {
