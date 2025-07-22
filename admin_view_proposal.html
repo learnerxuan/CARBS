@@ -1,76 +1,89 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CARBS - View Proposal</title>
-    <link rel="stylesheet" href="css/global.css">
-    <link rel="stylesheet" href="css/footer.css">
-    <link rel="stylesheet" href="css/forms.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CARBS - View Proposal</title>
+  <link rel="stylesheet" href="css/global.css" />
+  <link rel="stylesheet" href="css/footer.css" />
+  <link rel="stylesheet" href="css/forms.css" />
+  <script src="js/data.js"></script> <!-- Load mock data -->
 </head>
 <body>
-    <div id="header-placeholder"></div>
-    <main>
-        <section class="form-container">
-            <h2>Activity Proposal Details</h2>
-            <p class="form-description">Review the details of the submitted activity proposal.</p>
-            <form id="activityProposalForm">
-                <div class="form-group">
-                    <label for="activityName">Activity Name:</label>
-                    <input type="text" id="activityName" name="activityName" disabled>
-                </div>
-                <div class="form-group">
-                    <label for="clubName">Club Name:</label>
-                    <input type="text" id="clubName" name="clubName" disabled>
-                </div>
-                <div class="form-group">
-                    <label for="activityDescription">Activity Description:</label>
-                    <textarea id="activityDescription" name="activityDescription" rows="6" disabled></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="proposedDate">Proposed Date:</label>
-                    <input type="date" id="proposedDate" name="proposedDate" disabled>
-                </div>
-                <div class="form-group">
-                    <label for="expectedAttendees">Expected Number of Attendees:</label>
-                    <input type="number" id="expectedAttendees" name="expectedAttendees" min="1" disabled>
-                </div>
-                <div class="form-group">
-                    <label for="resourcesNeeded">Resources Needed:</label>
-                    <textarea id="resourcesNeeded" name="resourcesNeeded" rows="4" disabled></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="contactPerson">Contact Person Name:</label>
-                    <input type="text" id="contactPerson" name="contactPerson" disabled>
-                </div>
-                <div class="form-group">
-                    <label for="contactEmail">Contact Email:</label>
-                    <input type="email" id="contactEmail" name="contactEmail" disabled>
-                </div>
-                <div class="form-actions">
-                    <button type="button" class="btn secondary-btn" onclick="window.history.back();">Back to List</button>
-                </div>
-            </form>
-        </section>
-    </main>
-    <footer>
-        <p>&copy; 2025 CARBS. All rights reserved.</p>
-    </footer>
-    <script src="js/admin_load_header.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.has('name')) {
-                document.getElementById('activityName').value = urlParams.get('name');
-                document.getElementById('clubName').value = urlParams.get('club');
-                document.getElementById('proposedDate').value = urlParams.get('date');
-                document.getElementById('activityDescription').value = urlParams.get('description');
-                document.getElementById('expectedAttendees').value = urlParams.get('attendees');
-                document.getElementById('resourcesNeeded').value = urlParams.get('resources');
-                document.getElementById('contactPerson').value = urlParams.get('contactPerson');
-                document.getElementById('contactEmail').value = urlParams.get('contactEmail');
-            }
-        });
-    </script>
+  <div id="header-placeholder"></div>
+  <main>
+    <section class="form-container">
+      <h2>Activity Proposal Details</h2>
+      <p class="form-description">Review the details of the submitted activity proposal.</p>
+      <form id="activityProposalForm">
+        <div class="form-group">
+          <label for="activityName">Activity Name:</label>
+          <input type="text" id="activityName" name="activityName" disabled>
+        </div>
+        <div class="form-group">
+          <label for="clubName">Club Name:</label>
+          <input type="text" id="clubName" name="clubName" disabled>
+        </div>
+        <div class="form-group">
+          <label for="activityDescription">Activity Description:</label>
+          <textarea id="activityDescription" name="activityDescription" rows="6" disabled></textarea>
+        </div>
+        <div class="form-group">
+          <label for="proposedDate">Proposed Date:</label>
+          <input type="date" id="proposedDate" name="proposedDate" disabled>
+        </div>
+        <div class="form-group">
+          <label for="expectedAttendees">Expected Number of Attendees:</label>
+          <input type="number" id="expectedAttendees" name="expectedAttendees" min="1" disabled>
+        </div>
+        <div class="form-group">
+          <label for="resourcesNeeded">Resources Needed:</label>
+          <textarea id="resourcesNeeded" name="resourcesNeeded" rows="4" disabled></textarea>
+        </div>
+        <div class="form-group">
+          <label for="contactPerson">Contact Person Name:</label>
+          <input type="text" id="contactPerson" name="contactPerson" disabled>
+        </div>
+        <div class="form-group">
+          <label for="contactEmail">Contact Email:</label>
+          <input type="email" id="contactEmail" name="contactEmail" disabled>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn secondary-btn" onclick="window.history.back();">Back to List</button>
+        </div>
+      </form>
+    </section>
+  </main>
+  <footer>
+    <p>&copy; 2025 CARBS. All rights reserved.</p>
+  </footer>
+  <script src="js/admin_load_header.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const urlParams = new URLSearchParams(window.location.search);
+      const proposalId = urlParams.get('id');
+
+      if (!proposalId) {
+        alert('Missing proposal ID in URL.');
+        return;
+      }
+
+      const proposal = window.mockData.activityProposals.find(p => p.id === proposalId);
+
+      if (!proposal) {
+        alert('Proposal not found.');
+        return;
+      }
+
+      document.getElementById('activityName').value = proposal.activityName;
+      document.getElementById('clubName').value = proposal.clubName;
+      document.getElementById('activityDescription').value = proposal.description;
+      document.getElementById('proposedDate').value = proposal.proposedDate;
+      document.getElementById('expectedAttendees').value = proposal.expectedAttendees;
+      document.getElementById('resourcesNeeded').value = proposal.resourcesNeeded;
+      document.getElementById('contactPerson').value = proposal.contactPerson;
+      document.getElementById('contactEmail').value = proposal.contactEmail;
+    });
+  </script>
 </body>
 </html>

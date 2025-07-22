@@ -6,6 +6,7 @@
   <title>CARBS - Manage Proposals</title>
   <link rel="stylesheet" href="css/global.css" />
   <link rel="stylesheet" href="css/footer.css" />
+  <script src="js/data.js"></script> <!-- Load your mock data -->
   <style>
     main {
       padding: 40px 20px;
@@ -84,6 +85,11 @@
       color: black;
       cursor: not-allowed;
     }
+    .proposal-link {
+      color: #007bff;
+      text-decoration: underline;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -119,13 +125,7 @@
 
   <script src="js/admin_load_header.js"></script>
   <script>
-    const allProposals = [
-      { id: 1, name: 'Annual Charity Run', club: 'Running Club', date: '2025-11-15', status: 'Pending' },
-      { id: 2, name: 'Debate Tournament', club: 'Debate Society', date: '2025-10-22', status: 'Pending' },
-      { id: 3, name: 'Semester Gala Dinner', club: 'Student Union', date: '2025-12-01', status: 'Approved' },
-      { id: 4, name: 'Chess Club Championship', club: 'Chess Club', date: '2025-10-30', status: 'Approved' },
-      { id: 5, name: 'Photography Exhibition', club: 'Photography Club', date: '2025-11-20', status: 'Rejected' }
-    ];
+    const allProposals = window.mockData.activityProposals;
 
     const tableBody = document.getElementById('proposalsTableBody');
     const filterInput = document.getElementById('filterInput');
@@ -134,10 +134,10 @@
       tableBody.innerHTML = '';
       proposals.forEach(proposal => {
         const row = document.createElement('tr');
-        const statusClass = `status-${proposal.status.toLowerCase()}`;
+        const statusClass = `status-${proposal.status.toLowerCase().replace(/\s/g, '-')}`;
 
         const actionButtons =
-          proposal.status === 'Pending'
+          proposal.status === 'Pending Approval'
             ? `<td>
                 <button class="action-btn approve" data-id="${proposal.id}">Approve</button>
                 <button class="action-btn reject" data-id="${proposal.id}">Reject</button>
@@ -145,9 +145,9 @@
             : `<td><button class="action-btn disabled" disabled>${proposal.status}</button></td>`;
 
         row.innerHTML = `
-          <td>${proposal.name}</td>
-          <td>${proposal.club}</td>
-          <td>${proposal.date}</td>
+          <td><a class="proposal-link" href="admin_view_proposal.html?id=${proposal.id}">${proposal.activityName}</a></td>
+          <td>${proposal.clubName}</td>
+          <td>${proposal.proposedDate}</td>
           <td><span class="${statusClass}">${proposal.status}</span></td>
           ${actionButtons}
         `;
@@ -162,14 +162,13 @@
       document.querySelectorAll('.approve').forEach(btn =>
         btn.addEventListener('click', () => updateStatus(btn.dataset.id, 'Approved'))
       );
-
       document.querySelectorAll('.reject').forEach(btn =>
         btn.addEventListener('click', () => updateStatus(btn.dataset.id, 'Rejected'))
       );
     }
 
     function updateStatus(id, newStatus) {
-      const proposal = allProposals.find(p => p.id == id);
+      const proposal = allProposals.find(p => p.id === id);
       if (proposal) {
         proposal.status = newStatus;
         renderProposals(filterProposals());
@@ -179,8 +178,8 @@
     function filterProposals() {
       const query = filterInput.value.toLowerCase();
       return allProposals.filter(p =>
-        p.name.toLowerCase().includes(query) ||
-        p.club.toLowerCase().includes(query) ||
+        p.activityName.toLowerCase().includes(query) ||
+        p.clubName.toLowerCase().includes(query) ||
         p.status.toLowerCase().includes(query)
       );
     }

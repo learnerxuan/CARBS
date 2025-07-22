@@ -1,129 +1,160 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>CARBS - Dashboard</title>
-  <link rel="stylesheet" href="css/global.css" />
-  <link rel="stylesheet" href="css/main_dashboard.css" />
-</head>
-<body>
-  <div id="header-placeholder"></div>
-
-  <main>
-    <div class="dashboard-sections">
-      <section class="dashboard-section">
-        <h3>My Club's Requests Status</h3>
-        <p class="detailed-list-heading">
-          View the status of all your club's activity proposals.
-        </p>
-        <div class="dashboard-table-wrapper">
-          <table class="dashboard-table">
-            <thead>
-              <tr>
-                <th>Request</th>
-                <th style="width: 150px;">Status</th>
-              </tr>
-            </thead>
-            <tbody id="myClubRequestsTableBody"></tbody>
-          </table>
-          <p id="noClubRequestsMessage" class="no-data-message" style="display: none;">
-            You have not submitted any activity proposals yet.
-          </p>
-        </div>
-      </section>
-
-      <section class="dashboard-section">
-        <h3>Resource Bookings Status</h3>
-        <p class="detailed-list-heading">
-          View the status of all your club's resource bookings.
-        </p>
-        <div class="dashboard-table-wrapper">
-          <table class="dashboard-table">
-            <thead>
-              <tr>
-                <th>Resource</th>
-                <th>Date</th>
-                <th>Time</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody id="resourceBookingsTableBody"></tbody>
-          </table>
-          <p id="noResourceBookingsMessage" class="no-data-message" style="display: none;">
-            No resource bookings found for your club.
-          </p>
-        </div>
-      </section>
-    </div>
-  </main>
-
-  <footer>
-    <p>&copy; 2025 CARBS. All rights reserved.</p>
-  </footer>
-
-  <script src="js/load_header.js"></script>
-  <script src="js/data.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      const userClub = "Photography Club";
-
-      const myClubRequestsTableBody = document.getElementById('myClubRequestsTableBody');
-      const noClubRequestsMessage = document.getElementById('noClubRequestsMessage');
-
-      const myClubProposals = window.mockData.activityProposals.filter(
-        proposal => proposal.clubName === userClub
-      );
-
-      if (myClubProposals.length > 0) {
-        myClubRequestsTableBody.innerHTML = '';
-
-        myClubProposals.forEach(proposal => {
-          const row = myClubRequestsTableBody.insertRow();
-          row.insertCell().textContent = `${proposal.activityName}`;
-          const statusCell = row.insertCell();
-          const badge = document.createElement('span');
-          badge.classList.add('status-badge');
-          badge.textContent = proposal.status;
-          if (proposal.status === 'Approved') badge.classList.add('status-approved');
-          else if (proposal.status === 'Rejected') badge.classList.add('status-rejected');
-          else badge.classList.add('status-pending');
-          statusCell.appendChild(badge);
-        });
-
-        noClubRequestsMessage.style.display = 'none';
-      } else {
-        noClubRequestsMessage.style.display = 'block';
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CARBS - Dashboard</title>
+    <link rel="stylesheet" href="css/global.css" />
+    <link rel="stylesheet" href="css/main_dashboard.css" />
+    <style>
+      footer {
+        background-color: #1a2c4e; /* Match header background */
+        color: #e0f2f7;
+        text-align: center;
+        padding: 18px 0;
+        font-size: 0.8em;
+        margin-top: auto;
+        box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
       }
+    </style>
+  </head>
+  <body>
+    <div id="header-placeholder"></div>
 
-      const resourceBookingsTableBody = document.getElementById('resourceBookingsTableBody');
-      const noResourceBookingsMessage = document.getElementById('noResourceBookingsMessage');
+    <main>
+      <div class="dashboard-sections">
+        <section class="dashboard-section">
+          <h3>My Club's Requests Status</h3>
+          <p class="detailed-list-heading">
+            View the status of all your club's activity proposals.
+          </p>
+          <div class="dashboard-table-wrapper">
+            <table class="dashboard-table">
+              <thead>
+                <tr>
+                  <th>Request</th>
+                  <th style="width: 150px">Status</th>
+                </tr>
+              </thead>
+              <tbody id="myClubRequestsTableBody"></tbody>
+            </table>
+            <p
+              id="noClubRequestsMessage"
+              class="no-data-message"
+              style="display: none"
+            >
+              You have not submitted any activity proposals yet.
+            </p>
+          </div>
+        </section>
 
-      const myResourceBookings = window.mockData.resourceBookings
-        .filter(b => b.bookedBy === userClub)
-        .sort((a, b) => new Date(b.date) - new Date(a.date));
+        <section class="dashboard-section">
+          <h3>Resource Bookings Status</h3>
+          <p class="detailed-list-heading">
+            View the status of all your club's resource bookings.
+          </p>
+          <div class="dashboard-table-wrapper">
+            <table class="dashboard-table">
+              <thead>
+                <tr>
+                  <th>Resource</th>
+                  <th>Date</th>
+                  <th>Time</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="resourceBookingsTableBody"></tbody>
+            </table>
+            <p
+              id="noResourceBookingsMessage"
+              class="no-data-message"
+              style="display: none"
+            >
+              No resource bookings found for your club.
+            </p>
+          </div>
+        </section>
+      </div>
+    </main>
 
-      if (myResourceBookings.length > 0) {
-        resourceBookingsTableBody.innerHTML = '';
-        myResourceBookings.forEach(booking => {
-          const row = resourceBookingsTableBody.insertRow();
-          row.insertCell().textContent = booking.resourceName;
-          row.insertCell().textContent = booking.date;
-          row.insertCell().textContent = `${booking.startTime} - ${booking.endTime}`;
-          const statusCell = row.insertCell();
-          const badge = document.createElement('span');
-          badge.classList.add('status-badge');
-          badge.textContent = booking.status;
-          if (booking.status === 'Approved') badge.classList.add('status-approved');
-          else if (booking.status === 'Rejected') badge.classList.add('status-rejected');
-          else badge.classList.add('status-pending');
-          statusCell.appendChild(badge);
-        });
-        noResourceBookingsMessage.style.display = 'none';
-      } else {
-        noResourceBookingsMessage.style.display = 'block';
-      }
-    });
-  </script>
-</body>
+    <footer>
+      <p>&copy; 2025 CARBS. All rights reserved.</p>
+    </footer>
+
+    <script src="js/load_header.js"></script>
+    <script src="js/data.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const userClub = "Photography Club";
+
+        const myClubRequestsTableBody = document.getElementById(
+          "myClubRequestsTableBody"
+        );
+        const noClubRequestsMessage = document.getElementById(
+          "noClubRequestsMessage"
+        );
+
+        const myClubProposals = window.mockData.activityProposals.filter(
+          (proposal) => proposal.clubName === userClub
+        );
+
+        if (myClubProposals.length > 0) {
+          myClubRequestsTableBody.innerHTML = "";
+
+          myClubProposals.forEach((proposal) => {
+            const row = myClubRequestsTableBody.insertRow();
+            row.insertCell().textContent = `${proposal.activityName}`;
+            const statusCell = row.insertCell();
+            const badge = document.createElement("span");
+            badge.classList.add("status-badge");
+            badge.textContent = proposal.status;
+            if (proposal.status === "Approved")
+              badge.classList.add("status-approved");
+            else if (proposal.status === "Rejected")
+              badge.classList.add("status-rejected");
+            else badge.classList.add("status-pending");
+            statusCell.appendChild(badge);
+          });
+
+          noClubRequestsMessage.style.display = "none";
+        } else {
+          noClubRequestsMessage.style.display = "block";
+        }
+
+        const resourceBookingsTableBody = document.getElementById(
+          "resourceBookingsTableBody"
+        );
+        const noResourceBookingsMessage = document.getElementById(
+          "noResourceBookingsMessage"
+        );
+
+        const myResourceBookings = window.mockData.resourceBookings
+          .filter((b) => b.bookedBy === userClub)
+          .sort((a, b) => new Date(b.date) - new Date(a.date));
+
+        if (myResourceBookings.length > 0) {
+          resourceBookingsTableBody.innerHTML = "";
+          myResourceBookings.forEach((booking) => {
+            const row = resourceBookingsTableBody.insertRow();
+            row.insertCell().textContent = booking.resourceName;
+            row.insertCell().textContent = booking.date;
+            row.insertCell().textContent = `${booking.startTime} - ${booking.endTime}`;
+            const statusCell = row.insertCell();
+            const badge = document.createElement("span");
+            badge.classList.add("status-badge");
+            badge.textContent = booking.status;
+            if (booking.status === "Approved")
+              badge.classList.add("status-approved");
+            else if (booking.status === "Rejected")
+              badge.classList.add("status-rejected");
+            else badge.classList.add("status-pending");
+            statusCell.appendChild(badge);
+          });
+          noResourceBookingsMessage.style.display = "none";
+        } else {
+          noResourceBookingsMessage.style.display = "block";
+        }
+      });
+    </script>
+  </body>
 </html>
