@@ -137,7 +137,7 @@
                     <th>Date</th>
                     <th>Time</th>
                     <th>Description</th>
-                </tr>
+                    <th>Venue</th> </tr>
             </thead>
             <tbody id="activitiesTableBody">
             </tbody>
@@ -166,6 +166,7 @@
                     if (approvedActivities.length > 0) {
                         approvedActivities.forEach(activity => {
                             const row = document.createElement('tr');
+                            // Construct URL with all relevant activity details
                             const url = `s_view_activity.html?id=${activity.id}` +
                                         `&activityName=${encodeURIComponent(activity.activityName)}` +
                                         `&clubName=${encodeURIComponent(activity.clubName)}` +
@@ -173,7 +174,7 @@
                                         `&startTime=${encodeURIComponent(activity.startTime)}` +
                                         `&endTime=${encodeURIComponent(activity.endTime)}` +
                                         `&description=${encodeURIComponent(activity.description)}` +
-                                        `&resourcesNeeded=${encodeURIComponent(activity.resourcesNeeded)}` +
+                                        `&resourcesNeeded=${encodeURIComponent(activity.resourcesNeeded || 'N/A')}` + // Pass resourcesNeeded as venue
                                         `&contactPerson=${encodeURIComponent(activity.contactPerson)}` +
                                         `&contactEmail=${encodeURIComponent(activity.contactEmail)}` +
                                         `&attendees=${encodeURIComponent(activity.expectedAttendees)}`;
@@ -184,7 +185,7 @@
                                 <td><a href="${url}">${activity.proposedDate}</a></td>
                                 <td><a href="${url}">${activity.startTime} - ${activity.endTime}</a></td>
                                 <td class="description-cell"><a href="${url}">${activity.description}</a></td>
-                            `;
+                                <td><a href="${url}">${activity.resourcesNeeded || 'N/A'}</a></td> `;
                             tableBody.appendChild(row);
                         });
                         noActivitiesMessage.style.display = 'none';
@@ -200,7 +201,9 @@
 
             // Populate filter dropdown with unique club names
             function populateFilters(activities) {
-                const uniqueClubs = [...new Set(activities.map(activity => activity.clubName))];
+                // Clear existing options except "All Clubs"
+                filterClubSelect.innerHTML = '<option value="all">All Clubs</option>';
+                const uniqueClubs = [...new Set(activities.map(activity => activity.clubName))].sort(); // Sort alphabetically
                 uniqueClubs.forEach(club => {
                     const option = document.createElement('option');
                     option.value = club;
@@ -224,7 +227,8 @@
                     filteredActivities = filteredActivities.filter(activity => 
                         activity.activityName.toLowerCase().includes(searchTerm) ||
                         activity.description.toLowerCase().includes(searchTerm) ||
-                        activity.clubName.toLowerCase().includes(searchTerm)
+                        activity.clubName.toLowerCase().includes(searchTerm) ||
+                        (activity.resourcesNeeded && activity.resourcesNeeded.toLowerCase().includes(searchTerm)) // Search also in venue
                     );
                 }
 
@@ -237,7 +241,7 @@
 
             // Initial render
             populateFilters(allActivities);
-            renderTable(allActivities);
+            filterAndSearch(); // Call filterAndSearch to render the table initially with all approved activities
         });
     </script>
 </body>
