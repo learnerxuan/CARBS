@@ -24,22 +24,29 @@
         }
         .controls-container {
             display: flex;
+            flex-wrap: wrap; /* Allow wrapping on smaller screens */
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
             gap: 20px;
         }
-        .filter-container {
+        .filter-group { /* Added this for better grouping of filters */
             display: flex;
             align-items: center;
-            flex-grow: 1;
             gap: 10px;
-        }
-        .filter-container input {
             flex-grow: 1;
+            max-width: 70%; /* Limit filter group width */
+        }
+        .filter-group label {
+            font-weight: 600;
+            color: #333;
+        }
+        .filter-group input, .filter-group select {
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 6px;
+            font-size: 1em;
+            flex-grow: 1;
         }
         .resources-table {
             width: 100%;
@@ -146,9 +153,15 @@
             <p class="section-description">Add, update, and delete resources available for booking.</p>
         </div>
         <div class="controls-container">
-            <div class="filter-container">
-                <label for="filterInput">Filter Resources:</label>
-                <input type="text" id="filterInput" placeholder="by name or type...">
+            <div class="filter-group">
+                <label for="filterInput">Filter Name:</label>
+                <input type="text" id="filterInput" placeholder="by resource name...">
+            </div>
+            <div class="filter-group">
+                <label for="filterType">Filter Type:</label>
+                <select id="filterType">
+                    <option value="all">All Types</option>
+                    </select>
             </div>
             <button id="addResourceBtn" class="btn primary-btn">Add New Resource</button>
         </div>
@@ -159,7 +172,6 @@
                     <th>Type</th>
                     <th>Location</th>
                     <th>Quantity</th>
-                    <th>Available</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -231,6 +243,7 @@
             const noResourcesMessage = document.getElementById('noResourcesMessage');
             const addResourceBtn = document.getElementById('addResourceBtn');
             const filterInput = document.getElementById('filterInput');
+            const filterTypeSelect = document.getElementById('filterType'); // New filter select
 
             // Resource Form Modal Elements
             const resourceModal = document.getElementById('resourceModal');
@@ -257,14 +270,18 @@
             const statusMessage = document.getElementById('statusMessage');
             const statusOkBtn = document.getElementById('statusOkBtn');
 
-            function renderResourcesTable(filterText = '') {
+            function renderResourcesTable() {
                 resourcesTableBody.innerHTML = '';
                 const resources = window.mockData.resources;
 
+                const searchTerm = filterInput.value.toLowerCase();
+                const selectedType = filterTypeSelect.value;
+
                 const filteredResources = resources.filter(res => {
-                    const searchTerm = filterText.toLowerCase();
-                    return res.resourceName.toLowerCase().includes(searchTerm) || 
-                           res.type.toLowerCase().includes(searchTerm);
+                    const matchesSearch = res.resourceName.toLowerCase().includes(searchTerm) || 
+                                          res.type.toLowerCase().includes(searchTerm);
+                    const matchesType = selectedType === 'all' || res.type === selectedType;
+                    return matchesSearch && matchesType;
                 });
 
                 if (filteredResources.length > 0) {
@@ -276,7 +293,6 @@
                             <td>${resource.type}</td>
                             <td>${resource.location}</td>
                             <td>${resource.quantity}</td>
-                            <td>${resource.available}</td>
                             <td>
                                 <div class="action-buttons">
                                     <button class="btn secondary-btn update-btn" data-id="${resource.id}">Update</button>
@@ -289,6 +305,17 @@
                 } else {
                     noResourcesMessage.style.display = 'block';
                 }
+            }
+
+            function populateTypeFilters() {
+                filterTypeSelect.innerHTML = '<option value="all">All Types</option>'; // Reset options
+                const uniqueTypes = [...new Set(window.mockData.resources.map(res => res.type))].sort();
+                uniqueTypes.forEach(type => {
+                    const option = document.createElement('option');
+                    option.value = type;
+                    option.textContent = type;
+                    filterTypeSelect.appendChild(option);
+                });
             }
 
             // MODAL FUNCTIONS
@@ -324,6 +351,24 @@
 
             function showStatusModal(isSuccess, message) {
                 statusTitle.textContent = isSuccess ? 'Success' : 'Error';
+                // Remove existing icon if any
+                const existingIcon = statusTitle.previousElementSibling;
+                if (existingIcon && (existingIcon.classList.contains('success-icon') || existingIcon.classList.contains('error-icon'))) {
+                    existingIcon.remove();
+                }
+
+                const icon = document.createElement('div');
+                icon.classList.add('status-icon');
+                if (isSuccess) {
+                    icon.classList.add('success-icon');
+                    icon.innerHTML = '&#10004;'; // Checkmark
+                } else {
+                    icon.classList.add('error-icon');
+                    icon.innerHTML = '&#10006;'; // X mark
+                }
+                statusModal.querySelector('.modal-content').insertBefore(icon, statusTitle);
+
+
                 statusMessage.innerHTML = message;
                 statusModal.style.display = 'flex';
             }
@@ -340,10 +385,9 @@
             confirmCancelBtn.addEventListener('click', closeConfirmationModal);
             statusOkBtn.addEventListener('click', closeStatusModal);
             
-            filterInput.addEventListener('keyup', (event) => {
-                const filterText = event.target.value;
-                renderResourcesTable(filterText);
-            });
+            filterInput.addEventListener('keyup', renderResourcesTable);
+            filterTypeSelect.addEventListener('change', renderResourcesTable);
+
 
             window.addEventListener('click', (event) => {
                 if (event.target === resourceModal) {
@@ -370,28 +414,36 @@
                         window.mockData.resources[index].resourceName = resourceName;
                         window.mockData.resources[index].type = type;
                         window.mockData.resources[index].location = location;
-                        window.mockData.resources[index].quantity = quantity;
-                        // For simplicity, we assume all quantity is available on update
-                        window.mockData.resources[index].available = quantity;
+                        // Only update quantity if it's greater than or equal to current bookings for simplicity
+                        // In a real app, you'd need to check against actual outstanding bookings
+                        if (quantity >= 0) { // Assuming quantity can't be negative
+                            window.mockData.resources[index].quantity = quantity;
+                            // Reset available to match new quantity for simplicity, or implement more complex logic
+                            window.mockData.resources[index].available = quantity; 
+                        }
                         showStatusModal(true, `Resource "${resourceName}" has been successfully updated.`);
                     }
                 } else {
                     // Add new resource
-                    const newId = `res${String(window.mockData.resources.length + 1).padStart(3, '0')}`;
+                    // Generate a new unique ID (simple increment for prototype)
+                    const newIdNum = Math.max(...window.mockData.resources.map(res => parseInt(res.id.replace('res', ''), 10))) + 1;
+                    const newId = `res${String(newIdNum).padStart(3, '0')}`;
+                    
                     const newResource = {
                         id: newId,
                         resourceName: resourceName,
                         type: type,
                         location: location,
                         quantity: quantity,
-                        available: quantity,
+                        available: quantity, // New resources are fully available
                     };
                     window.mockData.resources.push(newResource);
                     showStatusModal(true, `New resource "${resourceName}" has been successfully added.`);
                 }
 
                 closeResourceModal();
-                renderResourcesTable(filterInput.value);
+                populateTypeFilters(); // Re-populate filters after adding/updating
+                renderResourcesTable(); // Re-render table
             });
 
             resourcesTableBody.addEventListener('click', function(event) {
@@ -415,10 +467,13 @@
                     
                     showStatusModal(true, `Resource "${resourceToDelete.resourceName}" has been successfully deleted.`);
                     closeConfirmationModal();
-                    renderResourcesTable(filterInput.value);
+                    populateTypeFilters(); // Re-populate filters after deleting
+                    renderResourcesTable(); // Re-render table
                 }
             });
 
+            // Initial render calls
+            populateTypeFilters();
             renderResourcesTable();
         });
     </script>
