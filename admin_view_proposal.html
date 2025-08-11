@@ -33,6 +33,14 @@
           <input type="date" id="proposedDate" name="proposedDate" disabled>
         </div>
         <div class="form-group">
+          <label for="startTime">Start Time:</label>
+          <input type="time" id="startTime" name="startTime" disabled>
+        </div>
+        <div class="form-group">
+          <label for="endTime">End Time:</label>
+          <input type="time" id="endTime" name="endTime" disabled>
+        </div>
+        <div class="form-group">
           <label for="expectedAttendees">Expected Number of Attendees:</label>
           <input type="number" id="expectedAttendees" name="expectedAttendees" min="1" disabled>
         </div>
@@ -47,6 +55,13 @@
         <div class="form-group">
           <label for="contactEmail">Contact Email:</label>
           <input type="email" id="contactEmail" name="contactEmail" disabled>
+        </div>
+        <div class="form-group">
+          <label for="priority">Request Priority:</label>
+          <select id="priority" name="priority" disabled>
+            <option value="low">Low</option>
+            <option value="high">High</option>
+          </select>
         </div>
         <div class="form-actions">
           <button type="button" class="btn secondary-btn" onclick="window.history.back();">Back to List</button>
@@ -79,10 +94,13 @@
       document.getElementById('clubName').value = proposal.clubName;
       document.getElementById('activityDescription').value = proposal.description;
       document.getElementById('proposedDate').value = proposal.proposedDate;
+      document.getElementById('startTime').value = proposal.startTime;
+      document.getElementById('endTime').value = proposal.endTime;
       document.getElementById('expectedAttendees').value = proposal.expectedAttendees;
       document.getElementById('resourcesNeeded').value = proposal.resourcesNeeded;
       document.getElementById('contactPerson').value = proposal.contactPerson;
       document.getElementById('contactEmail').value = proposal.contactEmail;
+      document.getElementById('priority').value = proposal.priority;
     });
   </script>
 </body>
